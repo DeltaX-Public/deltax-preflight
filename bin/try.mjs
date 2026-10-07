@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { runWorksheet } from '../src/worksheet.mjs';
+import { InputError, preflight } from '../src/preflight.mjs';
 
 const args = process.argv.slice(2);
 const example = args.length === 1 && args[0] === '--example';
 const save = args.length === 2 && args[0] === '--save' && !args[1].startsWith('-') ? resolve(args[1]) : null;
-if ((args.length > 0 && !example && !save) || (args.length === 0 && !stdin.isTTY)) {
-  process.stderr.write('Usage: node bin/try.mjs [--example | --save <new-folder>]\n');
+const replay = args.length === 2 && args[0] === '--replay' && !args[1].startsWith('-') ? resolve(args[1]) : null;
+if ((args.length > 0 && !example && !save && !replay) || (args.length === 0 && !stdin.isTTY)) {
+  process.stderr.write('Usage: node bin/try.mjs [--example | --save <new-folder> | --replay <saved-folder>]\n');
   process.stderr.write('Run without arguments in a terminal for an interactive worksheet.\n');
   process.exit(64);
 }
@@ -67,13 +69,33 @@ async function interact() {
   }
 }
 
+async function replayWorksheet(folder) {
+  const documents = await Promise.all(['decision', 'policy', 'evidence', 'worksheet'].map(async name => {
+    const bytes = await readFile(resolve(folder, `${name}.json`));
+    if (bytes.length > 1024 * 1024) throw new InputError(`${name} exceeds 1 MiB`);
+    try { return JSON.parse(bytes.toString('utf8')); }
+    catch { throw new InputError(`${name} is not valid JSON`); }
+  }));
+  const [decision, policy, evidence, worksheet] = documents;
+  if (evidence.source !== 'interactive-self-report'
+    || !worksheet.option_labels || !worksheet.requirement_labels
+    || !decision.candidates.every(candidate =>
+      typeof worksheet.option_labels[candidate.id] === 'string'
+      && worksheet.option_labels[candidate.id] === candidate.payload?.name)
+    || !policy.constraints.every(constraint =>
+      typeof worksheet.requirement_labels[constraint.id] === 'string'))
+    throw new InputError('saved worksheet labels do not match its inputs');
+  return { decision, policy, evidence, ...preflight(decision, policy, evidence),
+    option_labels: decision.candidates.map(candidate => worksheet.option_labels[candidate.id]) };
+}
+
 const input = example ? {
   objective: 'Choose a next step for a synthetic report',
   options: ['Review locally', 'Compare evidence', 'Publish now'],
   requirements: ['No external effect', 'Within approved scope'],
   answers: [['yes', 'yes'], ['yes', 'yes'], ['no', 'unknown']]
-} : await interact();
-const output = runWorksheet(input);
+} : replay ? null : await interact();
+const output = replay ? await replayWorksheet(replay) : runWorksheet(input);
 stdout.write(`\nPREFLIGHT (based on ${example ? 'synthetic example' : 'your self-reported answers'}): ${output.result.status}\n`);
 for (const [index, candidate] of output.result.candidates.entries())
   stdout.write(`- ${output.option_labels[index]}: ${candidate.verdict}\n`);

@@ -7,6 +7,7 @@
   "bin": {
     "deltax-preflight": "./bin/preflight.mjs",
     "deltax-preflight-init": "./bin/init.mjs",
+    "deltax-preflight-install-github": "./bin/install-github.mjs",
     "deltax-preflight-try": "./bin/try.mjs"
   },
   "exports": {
@@ -17,6 +18,7 @@
   "scripts": {
     "test": "node --test",
     "init": "node bin/init.mjs",
+    "install:github": "node bin/install-github.mjs",
     "try": "node bin/try.mjs",
     "demo:handoff": "node bin/demo-handoff.mjs",
     "preflight:ci": "node bin/preflight.mjs examples/ci-deploy.json --policy examples/ci-policy.json --evidence examples/ci-evidence.json --json",

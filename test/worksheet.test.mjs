@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { runWorksheet } from '../src/worksheet.mjs';
 
 const base = {
@@ -30,4 +33,23 @@ test('one-command example displays the validity-to-selection gap', () => {
   assert.match(run.stdout, /SELECTION_REQUIRED/);
   assert.match(run.stdout, /Publish now: rejected/);
   assert.match(run.stdout, /self-reported|synthetic example/);
+});
+
+test('saved worksheet replays with the names the person entered', () => {
+  const folder = mkdtempSync(join(tmpdir(), 'preflight-worksheet-'));
+  try {
+    const output = runWorksheet(base);
+    for (const name of ['decision', 'policy', 'evidence'])
+      writeFileSync(join(folder, `${name}.json`), JSON.stringify(output[name]));
+    writeFileSync(join(folder, 'worksheet.json'), JSON.stringify({
+      option_labels: { option_1: 'Inspect locally', option_2: 'Publish now' },
+      requirement_labels: { requirement_1: 'Within scope' }
+    }));
+    const cli = new URL('../bin/try.mjs', import.meta.url).pathname;
+    const run = spawnSync(process.execPath, [cli, '--replay', folder], { encoding: 'utf8' });
+    assert.equal(run.status, 0);
+    assert.match(run.stdout, /Inspect locally: admissible/);
+    assert.match(run.stdout, /Publish now: rejected/);
+    assert.doesNotMatch(run.stdout, /option_1/);
+  } finally { rmSync(folder, { recursive: true, force: true }); }
 });

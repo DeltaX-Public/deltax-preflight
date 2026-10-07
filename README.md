@@ -4,18 +4,20 @@ DeltaX Preflight is a local, deterministic validator for proposed actions. It an
 
 For example, if an agent proposes **review**, **compare**, and **publish**, a no-external-effect requirement rules out publishing. Preflight shows the two remaining choices without pretending the rule can decide between them.
 
-This is a prototype for [R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25). [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [issue evidence](docs/ISSUE-25-evidence.md) records the integration checks and their limits. The validator has no runtime dependencies and works without an account or network connection.
+This is a public preview of the local Preflight validator built from [R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25). [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [issue evidence](docs/ISSUE-25-evidence.md) records the earlier prototype checks and their limits. The validator has no runtime dependencies and works without an account or network connection.
 
 ## Try it without making files
 
-Requires Node.js 20 or later. Clone this repository, then run:
+Requires Git and Node.js 20 or later. No account or installation step is needed:
 
 ```sh
+git clone https://github.com/DeltaX-Public/deltax-preflight.git
+cd deltax-preflight
 node bin/try.mjs --example
 node bin/try.mjs
 ```
 
-The first command shows an immediate synthetic result. The second asks for your options, hard requirements, and yes/no/unknown facts. It reports which options satisfy those requirements and stops if selection remains open or evidence is missing. This is a **self-reported decision worksheet**, not an independently verified workflow gate. It selects and executes nothing. To save your answers as versioned inputs, run `node bin/try.mjs --save my-check` instead of the second command; the saved folder includes a label map.
+The first command shows an immediate synthetic result. The second asks for your options, hard requirements, and yes/no/unknown facts. It reports which options satisfy those requirements and stops if selection remains open or evidence is missing. This is a **self-reported decision worksheet**, not an independently verified workflow gate. It selects and executes nothing. To save your answers as versioned inputs, run `node bin/try.mjs --save my-check` instead of the second command. Reopen the saved result with `node bin/try.mjs --replay my-check`; your option names remain visible. Verify the facts before using any saved worksheet as an automation input.
 
 The example shows the distinction in a few seconds:
 
@@ -29,6 +31,10 @@ More than one option meets the stated requirements. Selection remains open.
 
 ## Use it in a workflow
 
+For a working GitHub pull request gate, run `node bin/install-github.mjs /path/to/your-repo` from this checkout. It adds one workflow and three example files without overwriting existing files. The workflow checks proposed agent actions against an owner-reviewed list; it uses the base branch for its policy and evidence source, treats the pull request proposal as data, and pins this checkout's Preflight commit and policy hash. Review the files and commit them to your repository's default branch before opening a proposal pull request. [The complete recipe](examples/github-agent-gate/README.md) explains the results and how to require the check before merge. The check does not run any proposed action.
+
+The [independent example repository](https://github.com/DeltaX-Public/deltax-preflight-example) ran this recipe on GitHub: [one allowed action passed and merged](https://github.com/DeltaX-Public/deltax-preflight-example/pull/1), while [a changed payload stopped for evidence](https://github.com/DeltaX-Public/deltax-preflight-example/pull/2) and [two allowed actions stopped for selection](https://github.com/DeltaX-Public/deltax-preflight-example/pull/3). Its main branch requires the `preflight` check.
+
 For an automated check, policy must come from the workflow owner and facts from a source authorized to assert them. If you need file templates, run:
 
 ```sh
@@ -39,7 +45,7 @@ This creates `decision.json`, `policy.json`, `evidence.json`, and a short guide 
 
 In plain terms: the **decision** lists options, the **policy** states requirements, and the **evidence** contains checked facts about each option. Keep policy and evidence under the control of people or systems authorized to provide them.
 
-The full example runs without setup:
+The full examples run without setup:
 
 ```sh
 node bin/preflight.mjs examples/ci-deploy.json \
@@ -50,6 +56,8 @@ node bin/preflight.mjs --hash-decision examples/ci-deploy.json
 node --test
 node bin/demo-handoff.mjs
 ```
+
+The first example intentionally exits with code `2`: two valid options remain, so selection is still needed. That is a successful demonstration of the decision boundary, though a shell configured to stop on nonzero exits will pause there.
 
 The decision path may be `-` for standard input. Use `--json` to emit `{ "result": ..., "handoff": ... }`. For a pinned policy, add `--expect-policy-sha256 <hash>`. Each input is limited to 1 MiB by the CLI and Action.
 
@@ -105,4 +113,4 @@ The first prototype put `constraints` and candidate `facts` in one decision enve
 
 ## License
 
-DeltaX Preflight is licensed under the [Apache License 2.0](LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The package remains marked `private` to prevent npm publishing while this is a prototype.
+DeltaX Preflight is licensed under the [Apache License 2.0](LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The package remains marked `private` because this preview is distributed through GitHub rather than npm.

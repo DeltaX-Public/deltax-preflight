@@ -1,0 +1,9 @@
+{
+  "schema_version": "2",
+  "kind": "policy",
+  "policy_id": "agent-proposal-review-gate",
+  "constraints": [
+    { "id": "reviewed_shape", "source": "candidate", "path": "/reviewed", "op": "eq", "value": true },
+    { "id": "no_external_effect", "source": "candidate", "path": "/non_effectful", "op": "eq", "value": true }
+  ]
+}
