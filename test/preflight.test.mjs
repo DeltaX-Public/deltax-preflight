@@ -59,6 +59,15 @@ test('canonical receipts ignore object key order and change when facts change', 
   assert.notEqual(preflight(reordered).result.receipt.input_hash, first.input_hash);
 });
 
+test('handoff snapshots the decision so later caller edits cannot change its receipt context', async () => {
+  const input = await load('ci-deploy');
+  const { handoff } = preflight(input);
+  input.context.environment = 'changed-after-validation';
+  input.candidates[1].facts.blast_radius = 99;
+  assert.equal(handoff.original_decision.context.environment, 'production');
+  assert.equal(handoff.admissible_candidates[0].facts.blast_radius, 1);
+});
+
 test('invalid envelopes fail before decision status', async () => {
   const input = await load('ci-deploy');
   input.candidates[1].id = input.candidates[0].id;

@@ -128,10 +128,11 @@ function evaluateRule(rule, candidate, context) {
 
 export function preflight(input) {
   validateInput(input);
-  const candidates = input.candidates.map(candidate => {
-    const checks = input.constraints.map(rule => ({
+  const decision = structuredClone(input);
+  const candidates = decision.candidates.map(candidate => {
+    const checks = decision.constraints.map(rule => ({
       constraint_id: rule.id,
-      ...evaluateRule(rule, candidate, input.context)
+      ...evaluateRule(rule, candidate, decision.context)
     }));
     const verdict = checks.some(check => check.outcome === 'fail') ? 'rejected'
       : checks.some(check => check.outcome === 'unknown') ? 'unproven'
@@ -144,7 +145,7 @@ export function preflight(input) {
     : 'SELECTION_REQUIRED';
   const result = {
     schema_version: '1',
-    decision_id: input.decision_id,
+    decision_id: decision.decision_id,
     status,
     counts: {
       received: candidates.length,
@@ -157,15 +158,15 @@ export function preflight(input) {
   };
   result.receipt = {
     algorithm: 'sha256',
-    input_hash: hash(input),
+    input_hash: hash(decision),
     result_hash: hash(result)
   };
   const handoff = status === 'SELECTION_REQUIRED' ? {
     schema_version: '1',
     kind: 'deltax-preflight-evaluate-handoff',
-    decision_id: input.decision_id,
-    original_decision: input,
-    admissible_candidates: input.candidates.filter(candidate => admissibleIds.includes(candidate.id)),
+    decision_id: decision.decision_id,
+    original_decision: decision,
+    admissible_candidates: decision.candidates.filter(candidate => admissibleIds.includes(candidate.id)),
     admissible_candidate_ids: admissibleIds,
     validation_receipt: result.receipt
   } : null;
