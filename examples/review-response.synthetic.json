@@ -1,0 +1,49 @@
+{
+  "request_id": "00000000-0000-4000-8000-000000000101",
+  "api_version": "2026-09-16.beta2",
+  "profile_id": "deltax-hosted-bounded-review-evaluation-v1",
+  "outcome": "selected",
+  "selected_candidate_id": "summarize_evidence",
+  "reason_codes": ["candidate_selected_within_bounded_evaluation"],
+  "trace": {
+    "trace_id": "00000000-0000-4000-8000-000000000102",
+    "request_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+    "candidate_field_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+    "release_set_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+    "policy_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+    "lambda_decisions": [
+      { "gate_id": "HES-G01", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G02", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G03", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G04", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G05", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G06", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G07", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G08", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G09", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G10", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G11", "disposition": "pass", "reason_code": "synthetic_fixture" },
+      { "gate_id": "HES-G12", "disposition": "pass", "reason_code": "synthetic_fixture" }
+    ],
+    "evidence_labels": ["operator_reported"],
+    "submitted_candidate_executed": false,
+    "external_effect": false,
+    "learning_applied": false,
+    "operator_reported_context_verified": false,
+    "committed_at": "2026-10-06T00:00:00Z"
+  },
+  "commercial_receipt": {
+    "receipt_id": "00000000-0000-4000-8000-000000000103",
+    "receipt_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+    "commercial_binding_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+    "mode": "free_beta",
+    "committed_at": "2026-10-06T00:00:00Z"
+  },
+  "authority": {
+    "selected_is_executed": false,
+    "selected_is_correct_or_safe": false,
+    "response_authorizes_downstream_action": false,
+    "response_is_professional_advice": false,
+    "trace_is_certification_or_legal_non_repudiation": false
+  }
+}

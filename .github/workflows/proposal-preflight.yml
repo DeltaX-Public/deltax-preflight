@@ -1,0 +1,35 @@
+name: Proposal Preflight
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trusted base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+      - name: Checkout proposal data
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: proposal
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Derive evidence from reviewed candidate manifest
+        run: node trusted/integration/derive-evidence.mjs proposal/integration/ci-proposal.json trusted/integration/ci-manifest.json ci-evidence.json
+      - name: Validate with trusted Preflight action and policy
+        uses: ./trusted
+        with:
+          decision_file: proposal/integration/ci-proposal.json
+          policy_file: trusted/integration/ci-policy.json
+          evidence_file: ci-evidence.json
+          expected_policy_sha256: 20858156874da97ab83c00270834c7abf47b6c1eef97e4d5356ba50fb93d2d3e

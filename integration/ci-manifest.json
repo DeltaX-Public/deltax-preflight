@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "kind": "reviewed-candidate-manifest",
+  "candidates": [
+    {
+      "id": "inspect_docs",
+      "payload": { "task": "inspect_docs", "scope": "local" },
+      "facts": { "reviewed": true, "non_effectful": true }
+    },
+    {
+      "id": "publish_docs",
+      "payload": { "task": "publish_docs", "scope": "public" },
+      "facts": { "reviewed": true, "non_effectful": false }
+    }
+  ]
+}

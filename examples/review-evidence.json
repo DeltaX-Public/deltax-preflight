@@ -1,0 +1,13 @@
+{
+  "schema_version": "2",
+  "kind": "evidence",
+  "evidence_id": "synthetic-review-evidence-001",
+  "source": "synthetic-example-operator",
+  "decision_hash": "f55953c07f5ddf37438bdae11c0f16fed73e1d901139690b4edeaad681f19cb7",
+  "context": {},
+  "candidates": [
+    { "id": "summarize_evidence", "facts": { "bounded_review": true, "no_external_effect": true } },
+    { "id": "compare_claims", "facts": { "bounded_review": true, "no_external_effect": true } },
+    { "id": "publish_report", "facts": { "bounded_review": false, "no_external_effect": false } }
+  ]
+}

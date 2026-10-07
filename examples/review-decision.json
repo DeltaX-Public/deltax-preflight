@@ -1,0 +1,32 @@
+{
+  "schema_version": "2",
+  "kind": "decision",
+  "decision_id": "synthetic-review-step",
+  "context": { "scenario": "synthetic evidence review" },
+  "candidates": [
+    {
+      "id": "summarize_evidence",
+      "payload": {
+        "semantic_class": "analyze",
+        "description": "Summarize gaps in a synthetic evidence packet without changing it.",
+        "operator_reported_support": 0.7
+      }
+    },
+    {
+      "id": "compare_claims",
+      "payload": {
+        "semantic_class": "compare",
+        "description": "Compare two synthetic support claims without external effects.",
+        "operator_reported_support": 0.65
+      }
+    },
+    {
+      "id": "publish_report",
+      "payload": {
+        "semantic_class": "external",
+        "description": "Publish the synthetic report.",
+        "operator_reported_support": 0.9
+      }
+    }
+  ]
+}

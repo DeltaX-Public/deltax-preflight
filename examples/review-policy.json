@@ -1,0 +1,9 @@
+{
+  "schema_version": "2",
+  "kind": "policy",
+  "policy_id": "synthetic-review-policy",
+  "constraints": [
+    { "id": "bounded_review_only", "source": "candidate", "path": "/bounded_review", "op": "eq", "value": true },
+    { "id": "no_external_effect", "source": "candidate", "path": "/no_external_effect", "op": "eq", "value": true }
+  ]
+}
