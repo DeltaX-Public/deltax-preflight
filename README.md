@@ -2,7 +2,7 @@
 
 DeltaX Preflight is a local, deterministic validator for proposed actions. It answers **which candidates satisfy explicit hard constraints**. When more than one candidate remains admissible, it reports `SELECTION_REQUIRED` and produces a local handoff packet for a separate selection process. It does not rank candidates, call DeltaX, or execute anything.
 
-This is a prototype for [R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25). [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the current protocol and trust boundary. The validator has no runtime dependencies and works without an account or network connection.
+This is a prototype for [R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25). [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [issue evidence](docs/ISSUE-25-evidence.md) records the integration checks and their limits. The validator has no runtime dependencies and works without an account or network connection.
 
 ## Run locally
 
@@ -64,7 +64,7 @@ steps:
 
 The Action outputs `status`, `admissible_count`, `receipt_hash`, and `policy_hash`. It fails the job for unresolved selection, refusal, or missing evidence. The example paths only illustrate the interface: the calling workflow must actually protect its policy and evidence sources.
 
-The [proposal integration workflow](.github/workflows/proposal-preflight.yml) demonstrates that boundary for this repository. It runs trusted action code, policy, and a reviewed candidate manifest from the pull request's base commit. It checks out the proposed decision separately as **data only**. The trusted evidence producer compares each candidate's exact payload with the manifest and leaves changed or unknown options unproven. The workflow has read-only repository permission and does not execute proposed code. Its policy hash is pinned in the base workflow. Repository branch protection is a separate GitHub setting and must be enabled before calling `main` protected from direct writes.
+The [proposal integration workflow](.github/workflows/proposal-preflight.yml) demonstrates that boundary for this repository. It runs trusted action code, policy, and a reviewed candidate manifest from the pull request's base commit. It checks out the proposed decision separately as **data only**. The trusted evidence producer compares each candidate's exact payload with the manifest and leaves changed or unknown options unproven. The workflow has read-only repository permission and does not execute proposed code. Its policy hash is pinned in the base workflow. GitHub `main` branch protection requires a PR and passing `preflight` and `test` checks, including for administrators; see the [positive and negative run evidence](docs/ISSUE-25-evidence.md).
 
 ## Migration from v1
 
