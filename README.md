@@ -16,7 +16,7 @@ node --test
 
 Supply a JSON file or `-` for standard input. `--json` emits `{ "result": ..., "handoff": ... }`. `handoff` is `null` unless the status is `SELECTION_REQUIRED`. Exit codes: `0` for `PASS_SINGLE`, `2` for `SELECTION_REQUIRED`, `3` for `REFUSE`, and `64` for invalid input. A required CI check can therefore stop on unresolved selection or refusal.
 
-The repository also contains a Node 20 GitHub Action. After licensing is resolved and a release is published, it can be used in a workflow with a checked-out decision file:
+The repository also contains a Node 20 GitHub Action. For a workflow using a checked-out decision file, pin it to a reviewed commit:
 
 ```yaml
 steps:
@@ -62,4 +62,4 @@ The handoff packet retains the original envelope, only the admissible candidates
 
 ## Licensing
 
-License selection is pending. Source is visible for review, but this repository does not currently grant reuse rights. The package is marked `UNLICENSED` and private for package publishing until that decision is made.
+DeltaX Preflight is licensed under the [Apache License 2.0](LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The package remains marked `private` to prevent npm publishing while this is a prototype.
