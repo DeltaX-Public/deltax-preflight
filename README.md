@@ -2,11 +2,34 @@
 
 DeltaX Preflight is a local, deterministic validator for proposed actions. It answers **which candidates satisfy explicit hard constraints**. When more than one candidate remains admissible, it reports `SELECTION_REQUIRED` and produces a local handoff packet for a separate selection process. It does not rank candidates, call DeltaX, or execute anything.
 
+For example, if an agent proposes **review**, **compare**, and **publish**, a no-external-effect requirement rules out publishing. Preflight shows the two remaining choices without pretending the rule can decide between them.
+
 This is a prototype for [R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25). [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [issue evidence](docs/ISSUE-25-evidence.md) records the integration checks and their limits. The validator has no runtime dependencies and works without an account or network connection.
 
-## Run locally
+## Try it without making files
 
-Requires Node.js 20 or later. No installation step is needed:
+Requires Node.js 20 or later. Clone this repository, then run:
+
+```sh
+node bin/try.mjs --example
+node bin/try.mjs
+```
+
+The first command shows an immediate synthetic result. The second asks for your options, hard requirements, and yes/no/unknown facts. It reports which options satisfy those requirements and stops if selection remains open or evidence is missing. This is a **self-reported decision worksheet**, not an independently verified workflow gate. It selects and executes nothing. To save your answers as versioned inputs, run `node bin/try.mjs --save my-check` instead of the second command; the saved folder includes a label map.
+
+The example shows the distinction in a few seconds:
+
+```text
+PREFLIGHT (based on synthetic example): SELECTION_REQUIRED
+- Review locally: admissible
+- Compare evidence: admissible
+- Publish now: rejected
+More than one option meets the stated requirements. Selection remains open.
+```
+
+## Use it in a workflow
+
+For an automated check, policy must come from the workflow owner and facts from a source authorized to assert them. If you need file templates, run:
 
 ```sh
 node bin/init.mjs my-check
@@ -16,7 +39,7 @@ This creates `decision.json`, `policy.json`, `evidence.json`, and a short guide 
 
 In plain terms: the **decision** lists options, the **policy** states requirements, and the **evidence** contains checked facts about each option. Keep policy and evidence under the control of people or systems authorized to provide them.
 
-To see a complete example immediately:
+The full example runs without setup:
 
 ```sh
 node bin/preflight.mjs examples/ci-deploy.json \
