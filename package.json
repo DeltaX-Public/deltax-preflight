@@ -10,8 +10,8 @@
   "exports": "./src/preflight.mjs",
   "scripts": {
     "test": "node --test",
-    "preflight:ci": "node bin/preflight.mjs examples/ci-deploy.json --json",
-    "preflight:agent": "node bin/preflight.mjs examples/agent-action.json --json"
+    "preflight:ci": "node bin/preflight.mjs examples/ci-deploy.json --policy examples/ci-policy.json --evidence examples/ci-evidence.json --json",
+    "preflight:agent": "node bin/preflight.mjs examples/agent-action.json --policy examples/agent-policy.json --evidence examples/agent-evidence.json --json"
   },
   "engines": {
     "node": ">=20"

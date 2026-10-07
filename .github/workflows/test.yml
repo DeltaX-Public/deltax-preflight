@@ -14,3 +14,6 @@ jobs:
       - uses: ./
         with:
           decision_file: examples/single.json
+          policy_file: examples/single-policy.json
+          evidence_file: examples/single-evidence.json
+          expected_policy_sha256: c1672d4ac9c0b19c93d6a930e54312602c456a390c74e814a6d316a7315ef07f

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/DeltaX-Public/deltax-preflight/main/schema/policy.v2.schema.json",
+  "title": "DeltaX Preflight policy v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "policy_id", "constraints"],
+  "properties": {
+    "schema_version": { "const": "2" },
+    "kind": { "const": "policy" },
+    "policy_id": { "$ref": "#/$defs/id" },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "source", "path", "op"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "source": { "enum": ["candidate", "context"] },
+          "path": { "type": "string", "pattern": "^/(?:[^~]|~[01])*$" },
+          "op": { "enum": ["eq", "in", "lte", "gte", "exists"] },
+          "value": {}
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "op": { "const": "exists" } } },
+            "then": { "not": { "required": ["value"] } }
+          },
+          {
+            "if": { "properties": { "op": { "const": "eq" } } },
+            "then": { "required": ["value"], "properties": { "value": { "$ref": "#/$defs/scalar" } } }
+          },
+          {
+            "if": { "properties": { "op": { "const": "in" } } },
+            "then": {
+              "required": ["value"],
+              "properties": { "value": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/scalar" } } }
+            }
+          },
+          {
+            "if": { "properties": { "op": { "enum": ["lte", "gte"] } } },
+            "then": { "required": ["value"], "properties": { "value": { "type": "number" } } }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "maxLength": 200, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "scalar": { "type": ["null", "boolean", "number", "string"] }
+  }
+}

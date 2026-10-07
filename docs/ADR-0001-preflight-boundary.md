@@ -1,6 +1,6 @@
 # ADR 0001: Local validation and selection boundary
 
-Status: proposed prototype, 2026-10-06. Related: [DeltaX R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25).
+Status: superseded for protocol v2 by [ADR 0002](ADR-0002-trusted-policy-and-evidence.md), 2026-10-06. This record describes the original v1 prototype. Related: [DeltaX R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25).
 
 ## Decision
 

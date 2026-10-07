@@ -1,0 +1,12 @@
+{
+  "schema_version": "2",
+  "kind": "evidence",
+  "evidence_id": "single-release-snapshot-001",
+  "source": "release-controller",
+  "decision_hash": "ca5d7852b6f28a19ae2f3af9c4d9f76c8bed307c51ca11c5a1808d3951d5c3e9",
+  "context": {},
+  "candidates": [
+    { "id": "deploy_now", "facts": { "reversible": false } },
+    { "id": "deploy_canary", "facts": { "reversible": true } }
+  ]
+}

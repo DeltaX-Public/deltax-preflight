@@ -1,0 +1,9 @@
+{
+  "schema_version": "2",
+  "kind": "policy",
+  "policy_id": "report-agent-policy",
+  "constraints": [
+    { "id": "scope", "source": "candidate", "path": "/within_scope", "op": "eq", "value": true },
+    { "id": "authorization", "source": "candidate", "path": "/authorized_for_current_context", "op": "eq", "value": true }
+  ]
+}

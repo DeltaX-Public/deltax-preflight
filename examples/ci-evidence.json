@@ -1,0 +1,13 @@
+{
+  "schema_version": "2",
+  "kind": "evidence",
+  "evidence_id": "release-controller-snapshot-001",
+  "source": "release-controller",
+  "decision_hash": "94467de59a0da5d4ee2b3959384a65e9b20513c74946916bc8a74025bf7369f6",
+  "context": { "environment": "production" },
+  "candidates": [
+    { "id": "deploy_now", "facts": { "reversible": false, "blast_radius": 5 } },
+    { "id": "deploy_canary", "facts": { "reversible": true, "blast_radius": 1 } },
+    { "id": "rollback", "facts": { "reversible": true, "blast_radius": 1 } }
+  ]
+}
