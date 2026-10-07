@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "decision_id": "agent-report-step-1",
+  "context": { "objective": "prepare report for review" },
+  "candidates": [
+    { "id": "read_report", "facts": { "within_scope": true, "authorized_for_current_context": true } },
+    { "id": "edit_report", "facts": { "within_scope": true, "authorized_for_current_context": true } },
+    { "id": "send_report", "facts": { "within_scope": true, "authorized_for_current_context": false } }
+  ],
+  "constraints": [
+    { "id": "scope", "source": "candidate", "path": "/within_scope", "op": "eq", "value": true },
+    { "id": "authorization", "source": "candidate", "path": "/authorized_for_current_context", "op": "eq", "value": true }
+  ]
+}

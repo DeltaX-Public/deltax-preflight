@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "decision_id": "safe-release-example",
+  "context": { "environment": "staging" },
+  "candidates": [
+    { "id": "deploy_now", "facts": { "reversible": false } },
+    { "id": "deploy_canary", "facts": { "reversible": true } }
+  ],
+  "constraints": [
+    { "id": "must_be_reversible", "source": "candidate", "path": "/reversible", "op": "eq", "value": true }
+  ]
+}

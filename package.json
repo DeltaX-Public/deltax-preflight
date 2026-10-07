@@ -1,0 +1,19 @@
+{
+  "name": "deltax-preflight",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "bin": {
+    "deltax-preflight": "./bin/preflight.mjs"
+  },
+  "exports": "./src/preflight.mjs",
+  "scripts": {
+    "test": "node --test",
+    "preflight:ci": "node bin/preflight.mjs examples/ci-deploy.json --json",
+    "preflight:agent": "node bin/preflight.mjs examples/agent-action.json --json"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
