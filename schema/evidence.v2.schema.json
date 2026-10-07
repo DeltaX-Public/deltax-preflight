@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/DeltaX-Public/deltax-preflight/main/schema/evidence.v2.schema.json",
+  "title": "DeltaX Preflight evidence v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "evidence_id", "source", "decision_hash", "context", "candidates"],
+  "properties": {
+    "schema_version": { "const": "2" },
+    "kind": { "const": "evidence" },
+    "evidence_id": { "$ref": "#/$defs/id" },
+    "source": { "$ref": "#/$defs/id" },
+    "decision_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "context": { "type": "object" },
+    "candidates": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "facts"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "facts": { "type": "object" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "maxLength": 200, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" }
+  }
+}

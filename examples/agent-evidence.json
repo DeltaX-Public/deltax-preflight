@@ -1,0 +1,13 @@
+{
+  "schema_version": "2",
+  "kind": "evidence",
+  "evidence_id": "permissions-snapshot-001",
+  "source": "permissions-service",
+  "decision_hash": "146c341c4042c36c9447e452a2df4123eec094c55f11e5fbde639ffa8d6657b2",
+  "context": {},
+  "candidates": [
+    { "id": "read_report", "facts": { "within_scope": true, "authorized_for_current_context": true } },
+    { "id": "edit_report", "facts": { "within_scope": true, "authorized_for_current_context": true } },
+    { "id": "send_report", "facts": { "within_scope": true, "authorized_for_current_context": false } }
+  ]
+}

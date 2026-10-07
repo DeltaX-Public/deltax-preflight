@@ -1,12 +1,10 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
+  "kind": "decision",
   "decision_id": "safe-release-example",
-  "context": { "environment": "staging" },
+  "context": { "objective": "test release" },
   "candidates": [
-    { "id": "deploy_now", "facts": { "reversible": false } },
-    { "id": "deploy_canary", "facts": { "reversible": true } }
-  ],
-  "constraints": [
-    { "id": "must_be_reversible", "source": "candidate", "path": "/reversible", "op": "eq", "value": true }
+    { "id": "deploy_now", "payload": { "operation": "full_deploy" } },
+    { "id": "deploy_canary", "payload": { "operation": "canary_deploy" } }
   ]
 }

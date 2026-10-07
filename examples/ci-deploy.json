@@ -1,15 +1,11 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
+  "kind": "decision",
   "decision_id": "release-2026-10-06",
-  "context": { "environment": "production", "objective": "restore service safely" },
+  "context": { "objective": "restore service safely" },
   "candidates": [
-    { "id": "deploy_now", "facts": { "reversible": false, "blast_radius": 5 } },
-    { "id": "deploy_canary", "facts": { "reversible": true, "blast_radius": 1 } },
-    { "id": "rollback", "facts": { "reversible": true, "blast_radius": 1 } }
-  ],
-  "constraints": [
-    { "id": "must_be_reversible", "source": "candidate", "path": "/reversible", "op": "eq", "value": true },
-    { "id": "max_blast_radius", "source": "candidate", "path": "/blast_radius", "op": "lte", "value": 2 },
-    { "id": "production_only", "source": "context", "path": "/environment", "op": "eq", "value": "production" }
+    { "id": "deploy_now", "payload": { "operation": "full_deploy" } },
+    { "id": "deploy_canary", "payload": { "operation": "canary_deploy" } },
+    { "id": "rollback", "payload": { "operation": "rollback" } }
   ]
 }

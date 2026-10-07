@@ -1,0 +1,10 @@
+{
+  "schema_version": "2",
+  "kind": "policy",
+  "policy_id": "production-release-policy",
+  "constraints": [
+    { "id": "must_be_reversible", "source": "candidate", "path": "/reversible", "op": "eq", "value": true },
+    { "id": "max_blast_radius", "source": "candidate", "path": "/blast_radius", "op": "lte", "value": 2 },
+    { "id": "production_only", "source": "context", "path": "/environment", "op": "eq", "value": "production" }
+  ]
+}

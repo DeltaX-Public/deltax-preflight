@@ -2,15 +2,26 @@ name: DeltaX Preflight
 description: Validate proposed actions locally and fail the check when selection remains unresolved or no option is admissible.
 inputs:
   decision_file:
-    description: Path to a decision-envelope JSON file within the checked-out workspace.
+    description: Path to a decision proposal JSON file within the checked-out workspace.
+    required: true
+  policy_file:
+    description: Path to a separately maintained policy JSON file within the checked-out workspace.
+    required: true
+  evidence_file:
+    description: Path to an operator-supplied evidence JSON file within the checked-out workspace.
+    required: true
+  expected_policy_sha256:
+    description: Canonical Preflight policy hash pinned by the workflow owner.
     required: true
 outputs:
   status:
-    description: PASS_SINGLE, REFUSE, or SELECTION_REQUIRED.
+    description: PASS_SINGLE, REFUSE, EVIDENCE_REQUIRED, or SELECTION_REQUIRED.
   admissible_count:
     description: Number of provably admissible candidates.
   receipt_hash:
     description: SHA-256 hash of the deterministic validation result.
+  policy_hash:
+    description: SHA-256 hash of the policy used for validation.
 runs:
   using: node20
   main: bin/action.mjs

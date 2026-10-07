@@ -1,0 +1,8 @@
+{
+  "schema_version": "2",
+  "kind": "policy",
+  "policy_id": "single-release-policy",
+  "constraints": [
+    { "id": "must_be_reversible", "source": "candidate", "path": "/reversible", "op": "eq", "value": true }
+  ]
+}
