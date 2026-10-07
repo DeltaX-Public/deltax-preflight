@@ -1,0 +1,21 @@
+{
+  "schema_version": "1",
+  "kind": "reviewed-candidate-manifest",
+  "candidates": [
+    {
+      "id": "inspect_change",
+      "payload": { "task": "inspect_change", "scope": "local" },
+      "facts": { "reviewed": true, "non_effectful": true }
+    },
+    {
+      "id": "compare_evidence",
+      "payload": { "task": "compare_evidence", "scope": "local" },
+      "facts": { "reviewed": true, "non_effectful": true }
+    },
+    {
+      "id": "publish_change",
+      "payload": { "task": "publish_change", "scope": "public" },
+      "facts": { "reviewed": true, "non_effectful": false }
+    }
+  ]
+}

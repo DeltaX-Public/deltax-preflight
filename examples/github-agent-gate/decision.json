@@ -1,0 +1,10 @@
+{
+  "schema_version": "2",
+  "kind": "decision",
+  "decision_id": "agent-next-step",
+  "context": { "objective": "Choose an approved next step for a proposed change" },
+  "candidates": [
+    { "id": "inspect_change", "payload": { "task": "inspect_change", "scope": "local" } },
+    { "id": "publish_change", "payload": { "task": "publish_change", "scope": "public" } }
+  ]
+}
