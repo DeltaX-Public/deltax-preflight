@@ -5,14 +5,19 @@
   "license": "Apache-2.0",
   "type": "module",
   "bin": {
-    "deltax-preflight": "./bin/preflight.mjs"
+    "deltax-preflight": "./bin/preflight.mjs",
+    "deltax-preflight-init": "./bin/init.mjs",
+    "deltax-preflight-try": "./bin/try.mjs"
   },
   "exports": {
     ".": "./src/preflight.mjs",
-    "./evaluate-bridge": "./src/evaluate-bridge.mjs"
+    "./evaluate-bridge": "./src/evaluate-bridge.mjs",
+    "./worksheet": "./src/worksheet.mjs"
   },
   "scripts": {
     "test": "node --test",
+    "init": "node bin/init.mjs",
+    "try": "node bin/try.mjs",
     "demo:handoff": "node bin/demo-handoff.mjs",
     "preflight:ci": "node bin/preflight.mjs examples/ci-deploy.json --policy examples/ci-policy.json --evidence examples/ci-evidence.json --json",
     "preflight:agent": "node bin/preflight.mjs examples/agent-action.json --policy examples/agent-policy.json --evidence examples/agent-evidence.json --json"
