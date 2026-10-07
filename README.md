@@ -9,6 +9,16 @@ This is a prototype for [R&D issue #25](https://github.com/DeltaX-Public/deltax-
 Requires Node.js 20 or later. No installation step is needed:
 
 ```sh
+node bin/init.mjs my-check
+```
+
+This creates `decision.json`, `policy.json`, `evidence.json`, and a short guide in `my-check/`. The first run deliberately returns `EVIDENCE_REQUIRED`: you must replace the empty facts with evidence from a source you trust. You can start from those valid files without learning the JSON structure first. You still need to decide which rules apply and who can assert the facts.
+
+In plain terms: the **decision** lists options, the **policy** states requirements, and the **evidence** contains checked facts about each option. Keep policy and evidence under the control of people or systems authorized to provide them.
+
+To see a complete example immediately:
+
+```sh
 node bin/preflight.mjs examples/ci-deploy.json \
   --policy examples/ci-policy.json \
   --evidence examples/ci-evidence.json
