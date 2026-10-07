@@ -15,6 +15,7 @@ node bin/preflight.mjs examples/ci-deploy.json \
 node bin/preflight.mjs --hash-policy examples/ci-policy.json
 node bin/preflight.mjs --hash-decision examples/ci-deploy.json
 node --test
+node bin/demo-handoff.mjs
 ```
 
 The decision path may be `-` for standard input. Use `--json` to emit `{ "result": ..., "handoff": ... }`. For a pinned policy, add `--expect-policy-sha256 <hash>`. Each input is limited to 1 MiB by the CLI and Action.
@@ -40,6 +41,12 @@ Malformed input, unrecognized candidate evidence, or a policy hash mismatch exit
 
 Only `SELECTION_REQUIRED` emits the local Evaluate handoff. It contains the original proposal, policy, evidence, admissible set, and receipt. **It is not a hosted API request.** Inspect and minimize it before any later network transmission. An Evaluate adapter must use the verified service contract, refuse selections outside the admissible set, and never execute a candidate on Preflight's behalf.
 
+## Bounded Evaluate bridge
+
+The optional [bridge](src/evaluate-bridge.mjs) turns a verified `SELECTION_REQUIRED` handoff into the fixed bounded-review request described in the [DeltaX developer guide](https://deltaxevaluate.com/developers). It sends only proven admissible candidates with explicitly supplied objective and scalar context; it does not copy the full proposal, policy, or evidence into the request. The bridge accepts at most eight review candidates and refuses external candidates as selectable options. A success response must match the `2026-09-16.beta2` shape, preserve all false authority and effect flags, and select only an admissible candidate or return `governed_noop_refusal`.
+
+`node bin/demo-handoff.mjs` runs a **synthetic offline demonstration**: three options enter Preflight, two survive, and a synthetic contract-valid response selects one review step. It records both receipts and the proposed, admissible, and selected IDs. This demo makes no API call and supplies no credential. Hosted access remains restricted; use an assigned client and its transport checks for any separately authorized live call. The bridge does not rank candidates or grant action authority.
+
 ## GitHub Action
 
 The Node 20 Action runs the same local validator. A workflow can use a reviewed commit and a policy hash pinned outside untrusted proposal changes:
@@ -56,6 +63,8 @@ steps:
 ```
 
 The Action outputs `status`, `admissible_count`, `receipt_hash`, and `policy_hash`. It fails the job for unresolved selection, refusal, or missing evidence. The example paths only illustrate the interface: the calling workflow must actually protect its policy and evidence sources.
+
+The [proposal integration workflow](.github/workflows/proposal-preflight.yml) demonstrates that boundary for this repository. It runs trusted action code, policy, and a reviewed candidate manifest from the pull request's base commit. It checks out the proposed decision separately as **data only**. The trusted evidence producer compares each candidate's exact payload with the manifest and leaves changed or unknown options unproven. The workflow has read-only repository permission and does not execute proposed code. Its policy hash is pinned in the base workflow. Repository branch protection is a separate GitHub setting and must be enabled before calling `main` protected from direct writes.
 
 ## Migration from v1
 

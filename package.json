@@ -7,9 +7,13 @@
   "bin": {
     "deltax-preflight": "./bin/preflight.mjs"
   },
-  "exports": "./src/preflight.mjs",
+  "exports": {
+    ".": "./src/preflight.mjs",
+    "./evaluate-bridge": "./src/evaluate-bridge.mjs"
+  },
   "scripts": {
     "test": "node --test",
+    "demo:handoff": "node bin/demo-handoff.mjs",
     "preflight:ci": "node bin/preflight.mjs examples/ci-deploy.json --policy examples/ci-policy.json --evidence examples/ci-evidence.json --json",
     "preflight:agent": "node bin/preflight.mjs examples/agent-action.json --policy examples/agent-policy.json --evidence examples/agent-evidence.json --json"
   },
