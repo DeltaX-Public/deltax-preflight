@@ -2,7 +2,7 @@
   "schema_version": "2",
   "kind": "decision",
   "decision_id": "documentation-review-demo",
-  "context": { "objective": "choose a documentation step" },
+  "context": { "objective": "choose a documentation review step for this pull request" },
   "candidates": [
     { "id": "inspect_docs", "payload": { "task": "inspect_docs", "scope": "local" } },
     { "id": "publish_docs", "payload": { "task": "publish_docs", "scope": "public" } }
