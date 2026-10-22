@@ -1,5 +1,9 @@
 name: DeltaX Preflight
+author: DeltaX
 description: Validate proposed actions locally and fail the check when selection remains unresolved or no option is admissible.
+branding:
+  icon: check-circle
+  color: blue
 inputs:
   decision_file:
     description: Path to a decision proposal JSON file within the checked-out workspace.
@@ -23,5 +27,5 @@ outputs:
   policy_hash:
     description: SHA-256 hash of the policy used for validation.
 runs:
-  using: node20
+  using: node24
   main: bin/action.mjs

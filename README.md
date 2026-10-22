@@ -94,7 +94,7 @@ The optional [bridge](src/evaluate-bridge.mjs) turns a verified `SELECTION_REQUI
 
 ## GitHub Action
 
-The Node 20 Action runs the same local validator. A workflow can use a reviewed commit and a policy hash pinned outside untrusted proposal changes:
+The Node 24 Action runs the same local validator. It requires a GitHub-hosted runner or a self-hosted runner that supports Node 24 actions. A workflow can use a reviewed commit and a policy hash pinned outside untrusted proposal changes:
 
 ```yaml
 steps:
