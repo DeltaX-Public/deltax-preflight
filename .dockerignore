@@ -1,0 +1,14 @@
+# Only the local MCP adapter, validation core, and license enter the build context.
+**
+!Dockerfile
+!.dockerignore
+!LICENSE
+!src/
+!src/preflight.mjs
+!mcp/
+!mcp/package.json
+!mcp/package-lock.json
+!mcp/src/
+!mcp/src/server.mjs
+!mcp/bin/
+!mcp/bin/server.mjs

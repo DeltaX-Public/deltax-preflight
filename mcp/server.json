@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.DeltaX-Public/deltax-preflight",
+  "title": "DeltaX Preflight",
+  "description": "Check finite candidate proposals against separate policy and evidence, with canonical hash receipts.",
+  "repository": {
+    "url": "https://github.com/DeltaX-Public/deltax-preflight",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/DeltaX-Public/deltax-preflight/releases/download/mcp-v0.1.0/deltax-preflight-mcp-0.1.0.mcpb",
+      "fileSha256": "018a56917bda7aa562ac9b3fc86df856ed984e03629efd01c7c3bc24f6e05d73",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

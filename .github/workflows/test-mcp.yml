@@ -1,0 +1,40 @@
+name: Test MCP adapter
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test-mcp:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['20', '22']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci --prefix mcp --ignore-scripts
+      - run: npm test --prefix mcp
+  distribution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix mcp --ignore-scripts
+      - name: Install the pinned official bundle tool
+        run: npm install --prefix "$RUNNER_TEMP/mcpb-tools" --ignore-scripts --no-audit --no-fund @anthropic-ai/mcpb@2.1.2
+      - name: Validate, pack, extract and test a standalone bundle
+        run: MCPB_CLI="$RUNNER_TEMP/mcpb-tools/node_modules/@anthropic-ai/mcpb/dist/cli/cli.js" node --test mcp/checks/bundle.spec.mjs
+      - name: Build the production stdio container
+        run: docker build --tag deltax-preflight-mcp:ci .
+      - name: Test the container with networking disabled
+        run: node --test mcp/checks/container-smoke.mjs
