@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1640" viewBox="0 0 1200 1640" role="img" aria-labelledby="pt pd">
+  <title id="pt">DeltaX Preflight: same action ID, different payload</title>
+  <desc id="pd">Synthetic inputs, real computed outputs. A reviewed candidate keeps its ID while its payload scope changes from local to public; Preflight reports EVIDENCE_REQUIRED. Four outcomes from the github-agent-gate example: PASS_SINGLE, EVIDENCE_REQUIRED, SELECTION_REQUIRED, REFUSE. Validation only; nothing is executed.</desc>
+  <defs>
+    <style>
+      .sans{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+      .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+      .t{fill:#ede9e0}.m{fill:#b4bdcb}.s{fill:#9aa6b9}.a{fill:#f0b456}
+      .pass{fill:#9fd3ae}.sel{fill:#a9c3f0}.ref{fill:#eeaaa6}
+      .card{fill:#151d2b;stroke:#2f3a4d;stroke-width:1.5}
+      .hair{stroke:#2f3a4d;stroke-width:1.5}
+    </style>
+    <radialGradient id="glow" cx="85%" cy="0%" r="60%"><stop offset="0" stop-color="#f0b456" stop-opacity=".09"/><stop offset="1" stop-color="#f0b456" stop-opacity="0"/></radialGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#9aa6b9" stroke-width="1.5"/></marker>
+  </defs>
+  <rect width="1200" height="1640" fill="#0c111b"/>
+  <rect width="1200" height="1640" fill="url(#glow)"/>
+
+  <!-- label strip -->
+  <rect x="0" y="0" width="1200" height="48" fill="#1b2231"/>
+  <line x1="0" y1="48" x2="1200" y2="48" class="hair"/>
+  <text id="strip" x="600" y="30" text-anchor="middle" class="sans m" font-size="16"><tspan class="a" font-weight="700">Synthetic inputs, real computed outputs</tspan> — illustrative inputs; results computed by the unchanged validator</text>
+
+  <!-- title -->
+  <text x="64" y="112" class="sans s" font-size="15" letter-spacing="2">DELTAX PREFLIGHT · LOCAL DETERMINISTIC VALIDATOR</text>
+  <text x="64" y="178" class="sans t" font-size="58" font-weight="700" letter-spacing="-1">Same action ID.</text>
+  <text x="64" y="244" class="sans a" font-size="58" font-weight="700" letter-spacing="-1">Different payload.</text>
+  <text x="64" y="290" class="sans m" font-size="20">Preflight checks the exact proposal against owner-controlled policy and reviewed</text>
+  <text x="64" y="318" class="sans m" font-size="20">evidence, and reports which candidates satisfy the hard constraints.</text>
+
+  <!-- drift diagram -->
+  <text x="64" y="378" class="sans s" font-size="15" font-weight="700" letter-spacing="1.5">PAYLOAD DRIFT AFTER REVIEW</text>
+  <!-- reviewed -->
+  <rect x="64" y="396" width="330" height="200" rx="14" class="card"/>
+  <text x="86" y="428" class="sans s" font-size="14" letter-spacing="1">REVIEWED · BASE-BRANCH MANIFEST</text>
+  <text x="86" y="466" class="mono t" font-size="20" font-weight="700">inspect_change</text>
+  <text x="86" y="498" class="mono m" font-size="17">task: "inspect_change"</text>
+  <text x="86" y="524" class="mono m" font-size="17">scope: <tspan class="t">"local"</tspan></text>
+  <text x="86" y="551" class="mono pass" font-size="15">reviewed: true</text>
+  <text x="86" y="575" class="mono pass" font-size="15">non_effectful: true</text>
+
+  <line x1="400" y1="496" x2="444" y2="496" stroke="#9aa6b9" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- proposed -->
+  <rect x="452" y="396" width="330" height="200" rx="14" fill="rgba(240,180,86,.10)" stroke="#f0b456" stroke-width="1.8"/>
+  <text x="474" y="428" class="sans a" font-size="14" letter-spacing="1">PROPOSED · PULL REQUEST (DATA)</text>
+  <text x="474" y="466" class="mono t" font-size="20" font-weight="700">inspect_change</text>
+  <text x="680" y="466" class="sans a" font-size="13" font-weight="700">SAME ID</text>
+  <text x="474" y="498" class="mono m" font-size="17">task: "inspect_change"</text>
+  <rect x="540" y="506" width="96" height="26" rx="5" fill="#f0b456"/>
+  <text x="474" y="525" class="mono m" font-size="17">scope: <tspan fill="#1a1205" font-weight="700" dx="4">"public"</tspan></text>
+  <text x="474" y="566" class="mono a" font-size="15">facts: {} · no reviewed match</text>
+
+  <line x1="788" y1="496" x2="832" y2="496" stroke="#9aa6b9" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- result -->
+  <rect x="840" y="396" width="296" height="200" rx="14" class="card"/>
+  <text x="862" y="428" class="sans s" font-size="14" letter-spacing="1">RESULT</text>
+  <rect x="862" y="446" width="252" height="50" rx="10" fill="rgba(240,180,86,.10)" stroke="#f0b456" stroke-width="1.5"/>
+  <text x="988" y="479" text-anchor="middle" class="mono a" font-size="20" font-weight="700">EVIDENCE_REQUIRED</text>
+  <text x="862" y="530" class="sans m" font-size="16">Unproven — not proven</text>
+  <text x="862" y="552" class="sans m" font-size="16">malicious. The check stops;</text>
+  <text x="862" y="574" class="sans m" font-size="16">no handoff is produced.</text>
+
+  <!-- flow + policy -->
+  <text x="64" y="652" class="sans s" font-size="15" font-weight="700" letter-spacing="1.5">EVERY SCENE: PROPOSAL → OWNER POLICY + REVIEWED EVIDENCE → RESULT</text>
+  <rect x="64" y="670" width="1072" height="92" rx="14" class="card"/>
+  <text x="86" y="702" class="sans s" font-size="14" letter-spacing="1">OWNER POLICY · agent-proposal-review-gate</text>
+  <text x="86" y="738" class="mono t" font-size="17">reviewed_shape <tspan class="m">candidate /reviewed eq true</tspan></text>
+  <text x="580" y="738" class="mono t" font-size="17">no_external_effect <tspan class="m">candidate /non_effectful eq true</tspan></text>
+
+  <!-- four outcomes -->
+  <text x="64" y="818" class="sans s" font-size="15" font-weight="700" letter-spacing="1.5">FOUR OUTCOMES · examples/github-agent-gate</text>
+
+  <!-- 1 PASS_SINGLE -->
+  <g transform="translate(64 836)">
+    <rect width="526" height="230" rx="14" class="card"/>
+    <text x="22" y="34" class="sans s" font-size="14" letter-spacing="1">1 · REVIEWED PROPOSAL</text>
+    <text x="22" y="80" class="mono pass" font-size="28" font-weight="700">PASS_SINGLE</text>
+    <circle cx="34" cy="116" r="11" fill="none" stroke="#9fd3ae" stroke-width="1.6"/><text x="34" y="121" text-anchor="middle" class="sans pass" font-size="14" font-weight="700">✓</text>
+    <text x="56" y="121" class="mono t" font-size="17">inspect_change <tspan class="pass sans" font-size="15" font-weight="600">admissible</tspan></text>
+    <circle cx="34" cy="148" r="11" fill="none" stroke="#eeaaa6" stroke-width="1.6"/><text x="34" y="153" text-anchor="middle" class="sans ref" font-size="14" font-weight="700">✕</text>
+    <text x="56" y="153" class="mono t" font-size="17">publish_change <tspan class="ref sans" font-size="15" font-weight="600">rejected</tspan></text>
+    <text x="22" y="192" class="sans m" font-size="16">Validation, not authorization or execution.</text>
+    <text x="22" y="214" class="sans m" font-size="16">Nothing runs.</text>
+  </g>
+  <!-- 2 EVIDENCE_REQUIRED -->
+  <g transform="translate(610 836)">
+    <rect width="526" height="230" rx="14" class="card"/>
+    <text x="22" y="34" class="sans s" font-size="14" letter-spacing="1">2 · SAME ID, CHANGED PAYLOAD</text>
+    <text x="22" y="80" class="mono a" font-size="28" font-weight="700">EVIDENCE_REQUIRED</text>
+    <circle cx="34" cy="116" r="11" fill="none" stroke="#f0b456" stroke-width="1.6"/><text x="34" y="121" text-anchor="middle" class="sans a" font-size="14" font-weight="700">?</text>
+    <text x="56" y="121" class="mono t" font-size="17">inspect_change <tspan class="a sans" font-size="15" font-weight="600">unproven · scope local → public</tspan></text>
+    <circle cx="34" cy="148" r="11" fill="none" stroke="#eeaaa6" stroke-width="1.6"/><text x="34" y="153" text-anchor="middle" class="sans ref" font-size="14" font-weight="700">✕</text>
+    <text x="56" y="153" class="mono t" font-size="17">publish_change <tspan class="ref sans" font-size="15" font-weight="600">rejected</tspan></text>
+    <text x="22" y="192" class="sans m" font-size="16">Unproven, not proven malicious: reviewed evidence</text>
+    <text x="22" y="214" class="sans m" font-size="16">does not cover this exact payload.</text>
+  </g>
+  <!-- 3 SELECTION_REQUIRED -->
+  <g transform="translate(64 1086)">
+    <rect width="526" height="230" rx="14" class="card"/>
+    <text x="22" y="34" class="sans s" font-size="14" letter-spacing="1">3 · TWO REVIEWED LOCAL OPTIONS</text>
+    <text x="22" y="80" class="mono sel" font-size="28" font-weight="700">SELECTION_REQUIRED</text>
+    <circle cx="34" cy="116" r="11" fill="none" stroke="#9fd3ae" stroke-width="1.6"/><text x="34" y="121" text-anchor="middle" class="sans pass" font-size="14" font-weight="700">✓</text>
+    <text x="56" y="121" class="mono t" font-size="17">inspect_change <tspan class="pass sans" font-size="15" font-weight="600">admissible</tspan></text>
+    <circle cx="34" cy="148" r="11" fill="none" stroke="#9fd3ae" stroke-width="1.6"/><text x="34" y="153" text-anchor="middle" class="sans pass" font-size="14" font-weight="700">✓</text>
+    <text x="56" y="153" class="mono t" font-size="17">compare_evidence <tspan class="pass sans" font-size="15" font-weight="600">admissible</tspan></text>
+    <text x="22" y="192" class="sans m" font-size="16">Preflight does not choose. The choice stays with a</text>
+    <text x="22" y="214" class="sans m" font-size="16">person or a separate, authorized process.</text>
+  </g>
+  <!-- 4 REFUSE -->
+  <g transform="translate(610 1086)">
+    <rect width="526" height="230" rx="14" class="card"/>
+    <text x="22" y="34" class="sans s" font-size="14" letter-spacing="1">4 · ONLY A DISALLOWED OPTION</text>
+    <text x="22" y="80" class="mono ref" font-size="28" font-weight="700">REFUSE</text>
+    <circle cx="34" cy="116" r="11" fill="none" stroke="#eeaaa6" stroke-width="1.6"/><text x="34" y="121" text-anchor="middle" class="sans ref" font-size="14" font-weight="700">✕</text>
+    <text x="56" y="121" class="mono t" font-size="17">publish_change <tspan class="ref sans" font-size="15" font-weight="600">rejected · no_external_effect fails</tspan></text>
+    <text x="22" y="192" class="sans m" font-size="16">No candidate is admissible and none is unproven.</text>
+    <text x="22" y="214" class="sans m" font-size="16">Nothing runs.</text>
+  </g>
+
+  <!-- boundaries -->
+  <rect x="64" y="1340" width="1072" height="214" rx="14" fill="rgba(21,29,43,.6)" stroke="#2f3a4d" stroke-width="1.5"/>
+  <text x="86" y="1374" class="sans t" font-size="19" font-weight="700">What this does not claim</text>
+  <text x="86" y="1408" class="sans m" font-size="16">• <tspan class="t" font-weight="600">PASS_SINGLE is validation, not authorization or execution.</tspan> No proposed action runs.</text>
+  <text x="86" y="1436" class="sans m" font-size="16">• <tspan class="t" font-weight="600">No automatic selection; no factual-truth proof.</tspan> Evidence is an owner assertion about exact payloads.</text>
+  <text x="86" y="1464" class="sans m" font-size="16">• <tspan class="t" font-weight="600">Blocking merge requires an owner-configured required check.</tspan> Without it, the result is advisory.</text>
+  <text x="86" y="1492" class="sans m" font-size="16">• <tspan class="t" font-weight="600">MCP exposes the same local validator</tspan> — not a gate against its caller.</text>
+  <text x="86" y="1520" class="sans m" font-size="16">• Statuses shown match the validator-generated fixtures (fixtures.js). No receipts are illustrated here.</text>
+
+  <text x="64" y="1590" class="sans s" font-size="15">Source: github.com/DeltaX-Public/deltax-preflight @ b0d36a8 · examples/github-agent-gate</text>
+  <text x="64" y="1614" class="sans s" font-size="13">DeltaX Evaluate is optional and not a dependency.</text>
+</svg>

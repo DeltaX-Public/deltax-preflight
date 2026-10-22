@@ -1,8 +1,12 @@
 # Local Preflight MCP adapter
 
+**Check the exact action your agent proposes against explicit rules and evidence.** For example, a reviewed local inspection can become unproven when its payload changes, even if its action ID stays the same. [See the four-result walkthrough](../README.md#when-a-reviewed-action-changes).
+
 This optional JavaScript ES module adapter exposes Preflight over stdio using the official MCP SDK. It imports the existing core functions directly. It does not rewrite validation rules, normalize input documents, rank candidates, or execute actions. The core CLI, GitHub Action, worksheet, schemas and Evaluate bridge remain unchanged.
 
 ## Install and connect
+
+For an MCPB-compatible desktop client, [download the published v0.1.0 bundle](https://github.com/DeltaX-Public/deltax-preflight/releases/tag/mcp-v0.1.0) and install it through the client's local extension controls. Review the release and its checksum before installation. The bundle runs locally and requires Node.js 20 or later. It has no hosted endpoint or API key. The source setup below works with hosts that support local stdio servers.
 
 Requires Node.js 20 or later and npm. From the repository root:
 

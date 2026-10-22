@@ -11,6 +11,7 @@ jobs:
         with:
           node-version: '24'
       - run: npm test
+      - run: node docs/demo/generate-fixtures.mjs --check
       - uses: ./
         with:
           decision_file: examples/single.json
