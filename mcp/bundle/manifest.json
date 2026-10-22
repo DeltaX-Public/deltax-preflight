@@ -1,0 +1,47 @@
+{
+  "manifest_version": "0.3",
+  "name": "deltax-preflight-mcp",
+  "display_name": "DeltaX Preflight",
+  "version": "0.1.0",
+  "description": "Check proposed decisions against separate policy and evidence documents locally.",
+  "long_description": "A local stdio wrapper for the unchanged DeltaX Preflight v2 validator. Checks caller-supplied decision, policy and evidence documents and returns the original result, receipt and optional local handoff. Includes canonical decision and policy hash tools. It does not authenticate supplied facts, select candidates, execute actions or grant authority. DeltaX Evaluate is optional, is not included, and is never called by this server. No account credentials or network service are required.",
+  "author": {
+    "name": "DeltaX",
+    "url": "https://github.com/DeltaX-Public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DeltaX-Public/deltax-preflight"
+  },
+  "homepage": "https://github.com/DeltaX-Public/deltax-preflight",
+  "documentation": "https://github.com/DeltaX-Public/deltax-preflight/blob/main/mcp/README.md",
+  "support": "https://github.com/DeltaX-Public/deltax-preflight/issues",
+  "license": "Apache-2.0",
+  "server": {
+    "type": "node",
+    "entry_point": "mcp/bin/server.mjs",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/mcp/bin/server.mjs"]
+    }
+  },
+  "compatibility": {
+    "runtimes": { "node": ">=20.0.0" }
+  },
+  "tools": [
+    {
+      "name": "preflight_check",
+      "description": "Check separate decision, policy and evidence documents using the unchanged local validator."
+    },
+    {
+      "name": "preflight_hash_decision",
+      "description": "Validate and compute the canonical SHA-256 hash of a decision document."
+    },
+    {
+      "name": "preflight_hash_policy",
+      "description": "Validate and compute the canonical SHA-256 hash of a policy document."
+    }
+  ],
+  "tools_generated": false,
+  "keywords": ["preflight", "policy", "evidence", "validation", "local", "stdio"]
+}

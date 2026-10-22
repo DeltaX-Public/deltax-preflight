@@ -104,3 +104,45 @@ npm test --prefix mcp
 The first command runs the original tests without MCP dependencies. Adapter tests use `.spec.mjs` under `mcp/checks/` and are run explicitly, so the dependency-free core suite does not discover them. The adapter suite launches the actual stdio entry point with an SDK client and compares reports, receipts, handoffs and hashes with direct core calls. It covers all four statuses, malformed/mismatched input, discovery, and error recovery.
 
 The separate package pins SDK 2.3.1 and includes a lockfile. The implementation follows the official SDK's [stdio factory pattern](https://ts.sdk.modelcontextprotocol.io/v2/serving/stdio) and [JSON Schema adapter guidance](https://ts.sdk.modelcontextprotocol.io/v2/advanced/schema-libraries). No TypeScript build step is required. This local adapter is not a hosted service or a production-readiness claim.
+
+## Local MCPB distribution
+
+The [bundle manifest](bundle/manifest.json) packages the local stdio server for MCPB-compatible desktop clients. It requires Node.js 20 or later and no account credentials, user configuration or Evaluate service. The bundle contains the unchanged core validator, existing MCP entry points and only the installed runtime packages selected by `mcp/package-lock.json`. It preserves the core import paths; the separate optional Evaluate bridge is not included.
+
+Install the pinned official [MCPB tooling](https://github.com/modelcontextprotocol/mcpb/blob/main/CLI.md) in a separate work directory. Set these paths to absolute locations outside the repository; the builder refuses existing staging directories or output files and never installs dependencies or publishes anything:
+
+```sh
+# Run from the repository root. Choose an existing writable parent outside it.
+BUNDLE_WORK=/absolute/path/to/work/preflight-mcpb
+mkdir -p "$BUNDLE_WORK"
+npm install --prefix "$BUNDLE_WORK/tools" --cache "$BUNDLE_WORK/npm-cache" \
+  --ignore-scripts --no-audit --no-fund @anthropic-ai/mcpb@2.1.2
+npm ci --prefix mcp --cache "$BUNDLE_WORK/npm-cache" --ignore-scripts
+
+node mcp/bundle/build.mjs \
+  --stage "$BUNDLE_WORK/stage-0.1.0" \
+  --output "$BUNDLE_WORK/deltax-preflight-mcp-0.1.0.mcpb" \
+  --mcpb-cli "$BUNDLE_WORK/tools/node_modules/@anthropic-ai/mcpb/dist/cli/cli.js"
+
+# Includes official manifest validation and packing, then extracts a fresh archive
+# outside the checkout and calls the actual server using the SDK client.
+MCPB_CLI="$BUNDLE_WORK/tools/node_modules/@anthropic-ai/mcpb/dist/cli/cli.js" \
+  node --test mcp/checks/bundle.spec.mjs
+```
+
+The builder reports the artifact path, SHA-256 hash, tool version and proposed release tag `mcp-v0.1.0`. The dedicated MCP tag leaves the existing core preview tag separate. Keep the staged directory for inspection; choose a fresh stage/output path for subsequent builds. The build has repeatable locked inputs but does not claim byte-for-byte identical ZIP archives across environments.
+
+For distribution, attach the tested `.mcpb` artifact to a GitHub Release. The [official MCP Registry](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/package-types.mdx) accepts a GitHub/GitLab Release artifact URL with `registryType: "mcpb"`, `fileSha256` and stdio transport; namespace authentication is a separate publishing step. [Smithery](https://smithery.ai/docs/build/publish) also accepts a prebuilt local MCPB bundle. Building the artifact does not create either marketplace listing.
+
+The [registry metadata](server.json) names `io.github.DeltaX-Public/deltax-preflight` and pins the exact release artifact hash. The manual [registry publication workflow](../.github/workflows/publish-mcp-registry.yml) runs only from this repository's `main` branch: it verifies the release asset and the pinned official publisher before using GitHub OIDC. It requires no saved registry secret. Publish the matching release asset before dispatching it; a repository merge alone does not submit a listing. Track native submission and acceptance evidence in [the marketplace rollout issue](https://github.com/DeltaX-Public/deltax-preflight/issues/9).
+
+## Container distribution
+
+The root [Dockerfile](../Dockerfile) builds only the core validator, MCP adapter and locked production dependencies. It runs as the unprivileged `node` user and speaks stdio with no HTTP port or Evaluate service:
+
+```sh
+docker build --tag deltax-preflight-mcp .
+docker run --rm -i --network=none deltax-preflight-mcp
+```
+
+Configure a Docker-capable MCP host with command `docker` and args `["run", "--rm", "-i", "--network=none", "deltax-preflight-mcp"]`. The initial image build downloads the base image and dependencies; the runtime check needs no network. CI builds the image and compares an actual container response against the core report with networking disabled. [Glama maintainer metadata](../glama.json) identifies the repository's verified GitHub maintainer; it does not claim a directory quality score or listing acceptance.

@@ -1,0 +1,75 @@
+name: Publish MCP Registry listing
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: publish-mcp-registry
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'DeltaX-Public/deltax-preflight' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out the dispatched main revision
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Verify the published bundle against committed metadata
+        env:
+          MCPB_URL: https://github.com/DeltaX-Public/deltax-preflight/releases/download/mcp-v0.1.0/deltax-preflight-mcp-0.1.0.mcpb
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq --exit-status --arg url "$MCPB_URL" '
+            .name == "io.github.DeltaX-Public/deltax-preflight" and
+            .version == "0.1.0" and
+            (.packages | length) == 1 and
+            .packages[0].registryType == "mcpb" and
+            .packages[0].identifier == $url and
+            .packages[0].transport.type == "stdio" and
+            (.packages[0] | has("registryBaseUrl") | not) and
+            ((.remotes // []) | length) == 0 and
+            (.packages[0].fileSha256 | test("^[a-f0-9]{64}$"))
+          ' mcp/server.json > /dev/null
+          bundle_sha256="$(jq --raw-output --exit-status '.packages[0].fileSha256' mcp/server.json)"
+          bundle_path="$RUNNER_TEMP/deltax-preflight-mcp-0.1.0.mcpb"
+          curl --fail --location --silent --show-error "$MCPB_URL" --output "$bundle_path"
+          printf '%s  %s\n' "$bundle_sha256" "$bundle_path" | sha256sum --check --strict
+
+      - name: Install the pinned and verified publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          publisher_archive="$RUNNER_TEMP/mcp-publisher_linux_amd64.tar.gz"
+          publisher_dir="$RUNNER_TEMP/mcp-publisher"
+          curl --fail --location --silent --show-error \
+            https://github.com/modelcontextprotocol/registry/releases/download/v1.8.1/mcp-publisher_linux_amd64.tar.gz \
+            --output "$publisher_archive"
+          printf '%s  %s\n' \
+            a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc \
+            "$publisher_archive" | sha256sum --check --strict
+          mkdir -p "$publisher_dir"
+          tar --extract --gzip --file "$publisher_archive" --directory "$publisher_dir" mcp-publisher
+          chmod +x "$publisher_dir/mcp-publisher"
+
+      - name: Validate metadata without publishing
+        shell: bash
+        run: '"$RUNNER_TEMP/mcp-publisher/mcp-publisher" validate mcp/server.json'
+
+      - name: Authenticate with GitHub OIDC and publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          trap '"$RUNNER_TEMP/mcp-publisher/mcp-publisher" logout > /dev/null 2>&1 || true' EXIT
+          "$RUNNER_TEMP/mcp-publisher/mcp-publisher" login github-oidc --registry=https://registry.modelcontextprotocol.io
+          "$RUNNER_TEMP/mcp-publisher/mcp-publisher" publish mcp/server.json
