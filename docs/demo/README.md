@@ -1,10 +1,14 @@
 # An agent changed a reviewed proposal
 
-Open [index.html](index.html) in a browser from a downloaded or cloned copy of this repository. The walkthrough runs locally with no installation, account, API key or network request. Keep `index.html`, `styles.css`, `app.js`, and `fixtures.js` together. The [poster](poster.svg) provides a static preview for the repository.
+[Try the live demo on GitHub Pages](https://deltax-public.github.io/deltax-preflight/). It opens in your browser with no download, account or API key. GitHub Pages serves the static files; all walkthrough interactions happen in your browser.
+
+For offline viewing, open [index.html](index.html) from a downloaded or cloned copy of this repository. Keep `index.html`, `styles.css`, `app.js`, and `fixtures.js` together. A downloaded copy needs no network connection. The [poster](poster.svg) provides a static preview for the repository.
 
 The four scenes show what happens when an agent proposes a reviewed local inspection, changes its payload while retaining its ID, offers two reviewed local options, or proposes publication alone. Inputs are synthetic; all displayed validation results and receipts come from the real validator. This page displays precomputed results rather than running arbitrary proposals in the browser.
 
 The visual design was created by the user's Grok Bot Visual Desk, then integrated and verified against Preflight's existing fixtures. No core validation behavior changes for this demo.
+
+The [Pages workflow](../../.github/workflows/publish-demo.yml) verifies the generated results and publishes only the five static demo files from `main`. It runs when the demo or its deployment workflow changes and can also be dispatched manually from `main`.
 
 ## Verify the results
 
