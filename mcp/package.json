@@ -1,0 +1,23 @@
+{
+  "name": "deltax-preflight-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "deltax-preflight-mcp": "./bin/server.mjs"
+  },
+  "scripts": {
+    "start": "node bin/server.mjs",
+    "test": "node --test checks/*.spec.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.3.1"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.3.1"
+  }
+}

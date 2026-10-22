@@ -63,6 +63,10 @@ The decision path may be `-` for standard input. Use `--json` to emit `{ "result
 
 The [decision](schema/decision.v2.schema.json), [policy](schema/policy.v2.schema.json), and [evidence](schema/evidence.v2.schema.json) files have separate JSON Schemas. The examples include a [CI deployment proposal](examples/ci-deploy.json) and an [agent action proposal](examples/agent-action.json), each with matching policy and evidence files. Candidate IDs and payloads express what is proposed. Only evidence facts are checked against policy.
 
+## Local MCP server
+
+The optional [MCP adapter](mcp/README.md) exposes the same validator and canonical decision/policy hash helpers over local stdio. Install its separate dependencies with `npm ci --prefix mcp --ignore-scripts`, then configure your MCP host to launch `node /absolute/path/to/deltax-preflight/mcp/bin/server.mjs`. The adapter returns the existing result and handoff unchanged. It does not call Evaluate, select or execute candidates, authenticate caller-supplied facts, or add dependencies to the core validator. See the adapter guide for tool arguments, client configuration, and tests.
+
 ## Trust boundary
 
 Keep policy under the workflow owner's control, separate from the actor proposing candidates. Obtain evidence from a source authorized to assert the relevant facts. The evidence producer must set `decision_hash` to the canonical hash of the exact proposal it checked; `--hash-decision` computes that value. A changed proposal is rejected even when candidate IDs stay the same. The `evidence.source` string identifies that source for records but does **not** authenticate it. Preflight cannot establish that supplied facts are true. Its receipt hashes the decision, policy, evidence, and result separately; hashes detect changed content but do not grant authority to act.
