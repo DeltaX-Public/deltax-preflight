@@ -4,6 +4,7 @@
 
 DeltaX Preflight checks proposed actions against owner-controlled rules and evidence. Use the **GitHub Action** as a required workflow check, or connect the **local MCP server** to check proposals from an agent. Both use the same deterministic validator. No DeltaX account or API key is needed.
 
+- [Try the live demo](https://deltax-public.github.io/deltax-preflight/) — no download, account or API key
 - [Use the GitHub Action on Marketplace](https://github.com/marketplace/actions/deltax-preflight)
 - [Install the owner-reviewed pull request gate](examples/github-agent-gate/README.md)
 - [Connect the local MCP server](mcp/README.md) · [Download the MCP bundle](https://github.com/DeltaX-Public/deltax-preflight/releases/tag/mcp-v0.1.0)
@@ -14,9 +15,9 @@ Keep policy and evidence under the workflow owner's control. Preflight checks th
 
 An agent proposes `inspect_change` with `scope: local`. The owner's reviewed manifest covers that exact payload. If the agent keeps the same action ID but changes the scope to `public`, that review no longer supplies evidence for the new proposal.
 
-[![Preflight walkthrough: a reviewed local proposal, changed payload, two valid options, and refusal](docs/demo/poster.svg)](docs/demo/README.md)
+[![Preflight walkthrough: a reviewed local proposal, changed payload, two valid options, and refusal](docs/demo/poster.svg)](https://deltax-public.github.io/deltax-preflight/)
 
-[Run the visual walkthrough locally](docs/demo/README.md): four selectable scenes, synthetic inputs, and results computed by the real validator. No installation or API key is needed to view it.
+[Try the live visual walkthrough](https://deltax-public.github.io/deltax-preflight/): four selectable scenes, synthetic inputs, and precomputed results from the real validator. No download or API key is needed. You can also [run it offline](docs/demo/README.md).
 
 | Proposal in the example | Preflight result | What remains |
 | --- | --- | --- |

@@ -34,6 +34,7 @@ h1{margin:0 0 8px;font-size:clamp(1.9rem,4.2vw,2.7rem);line-height:1.08;letter-s
 .accent{color:var(--amber)}
 .lede{max-width:760px;color:var(--muted);margin:0}
 .lede em{color:var(--text);font-style:normal;border-bottom:1px solid var(--amber)}
+.demo-note{max-width:760px;margin:8px 0 0;color:var(--muted);font-size:.88rem}
 
 .controls{display:grid;gap:10px;margin:16px 0 14px}
 .tablist{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
