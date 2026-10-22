@@ -1,10 +1,33 @@
 # DeltaX Preflight
 
-DeltaX Preflight is a local, deterministic validator for proposed actions. It answers **which candidates satisfy explicit hard constraints**. When more than one candidate remains admissible, it reports `SELECTION_REQUIRED` and produces a local handoff packet for a separate selection process. It does not rank candidates, call DeltaX, or execute anything.
+**Check an agent's proposed next step before a pull request can merge.**
 
-For example, if an agent proposes **review**, **compare**, and **publish**, a no-external-effect requirement rules out publishing. Preflight shows the two remaining choices without pretending the rule can decide between them.
+DeltaX Preflight checks proposed actions against owner-controlled rules and evidence. Use the **GitHub Action** as a required workflow check, or connect the **local MCP server** to check proposals from an agent. Both use the same deterministic validator. No DeltaX account or API key is needed.
 
-This is a public preview of the local Preflight validator built from [R&D issue #25](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25). [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [issue evidence](docs/ISSUE-25-evidence.md) records the earlier prototype checks and their limits. The validator has no runtime dependencies and works without an account or network connection.
+- [Use the GitHub Action on Marketplace](https://github.com/marketplace/actions/deltax-preflight)
+- [Install the owner-reviewed pull request gate](examples/github-agent-gate/README.md)
+- [Connect the local MCP server](mcp/README.md) · [Download the MCP bundle](https://github.com/DeltaX-Public/deltax-preflight/releases/tag/mcp-v0.1.0)
+
+Keep policy and evidence under the workflow owner's control. Preflight checks the supplied facts; it does not establish their truth, choose among multiple allowed options, or execute actions. To block a GitHub merge, configure the workflow check as required. The MCP server evaluates its caller's documents; the surrounding application controls trust and enforcement. DeltaX Evaluate is an optional, separate integration.
+
+## When a reviewed action changes
+
+An agent proposes `inspect_change` with `scope: local`. The owner's reviewed manifest covers that exact payload. If the agent keeps the same action ID but changes the scope to `public`, that review no longer supplies evidence for the new proposal.
+
+[![Preflight walkthrough: a reviewed local proposal, changed payload, two valid options, and refusal](docs/demo/poster.svg)](docs/demo/README.md)
+
+[Run the visual walkthrough locally](docs/demo/README.md): four selectable scenes, synthetic inputs, and results computed by the real validator. No installation or API key is needed to view it.
+
+| Proposal in the example | Preflight result | What remains |
+| --- | --- | --- |
+| Reviewed local inspection plus a forbidden publish option | `PASS_SINGLE` | Inspection is the one admissible option; nothing is executed. |
+| Same inspection ID, changed payload | `EVIDENCE_REQUIRED` | Obtain evidence for the changed proposal. |
+| Two exact, reviewed local options | `SELECTION_REQUIRED` | A human or separately authorized system must choose. |
+| Only the forbidden publish option | `REFUSE` | No admissible option remains. |
+
+These synthetic scenarios use the [owner-reviewed gate fixtures](examples/github-agent-gate/README.md). The [independent example pull requests](https://github.com/DeltaX-Public/deltax-preflight-example/pulls?q=is%3Apr+is%3Aclosed) show actual GitHub checks for the first three outcomes.
+
+This is a **public preview**. The core validator has no runtime dependencies and works offline. [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [R&D issue](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25) and [issue evidence](docs/ISSUE-25-evidence.md) record the earlier prototype checks and their limits.
 
 ## Try it without making files
 
