@@ -5,13 +5,14 @@
 DeltaX Preflight checks proposed actions against owner-controlled rules and evidence. Use the **GitHub Action** as a required workflow check, or connect the **local MCP server** to check proposals from an agent. Both use the same deterministic validator. No DeltaX account or API key is needed.
 
 - [Try the live demo](https://deltax-public.github.io/deltax-preflight/) — no download, account or API key
+- [Install the core package from npm](https://www.npmjs.com/package/deltax-preflight/v/0.1.0)
 - [Use the GitHub Action on Marketplace](https://github.com/marketplace/actions/deltax-preflight)
 - [Install the owner-reviewed pull request gate](https://github.com/DeltaX-Public/deltax-preflight/blob/main/examples/github-agent-gate/README.md)
 - [Connect the local MCP server](https://github.com/DeltaX-Public/deltax-preflight/blob/main/mcp/README.md) · [Download the MCP bundle](https://github.com/DeltaX-Public/deltax-preflight/releases/tag/mcp-v0.1.0)
 
 ## Install the command-line package
 
-Requires Node.js 20 or later. After the npm release, install the core validator with:
+Requires Node.js 20 or later. Install the core validator with:
 
 ```sh
 npm install --global deltax-preflight
@@ -156,4 +157,4 @@ The first prototype put `constraints` and candidate `facts` in one decision enve
 
 ## License
 
-DeltaX Preflight is licensed under the [Apache License 2.0](https://github.com/DeltaX-Public/deltax-preflight/blob/main/LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The core command-line package is prepared for npm; the optional MCP adapter remains distributed separately.
+DeltaX Preflight is licensed under the [Apache License 2.0](https://github.com/DeltaX-Public/deltax-preflight/blob/main/LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The core command-line package is published on npm; the optional MCP adapter remains distributed separately.
