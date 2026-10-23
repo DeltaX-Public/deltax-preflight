@@ -91,6 +91,8 @@ The [decision](schema/decision.v2.schema.json), [policy](schema/policy.v2.schema
 
 The optional [MCP adapter](mcp/README.md) exposes the same validator and canonical decision/policy hash helpers over local stdio. Install its separate dependencies with `npm ci --prefix mcp --ignore-scripts`, then configure your MCP host to launch `node /absolute/path/to/deltax-preflight/mcp/bin/server.mjs`. The adapter returns the existing result and handoff unchanged. It does not call Evaluate, select or execute candidates, authenticate caller-supplied facts, or add dependencies to the core validator. See the adapter guide for tool arguments, client configuration, and tests.
 
+An optional [Glama-managed container deployment](mcp/README.md#optional-glama-managed-deployment) runs through Glama's proxy and infrastructure. Review that data boundary before sending policy, evidence, or candidate payloads; the local stdio setup above keeps them in the MCP host's environment.
+
 ## Trust boundary
 
 Keep policy under the workflow owner's control, separate from the actor proposing candidates. Obtain evidence from a source authorized to assert the relevant facts. The evidence producer must set `decision_hash` to the canonical hash of the exact proposal it checked; `--hash-decision` computes that value. A changed proposal is rejected even when candidate IDs stay the same. The `evidence.source` string identifies that source for records but does **not** authenticate it. Preflight cannot establish that supplied facts are true. Its receipt hashes the decision, policy, evidence, and result separately; hashes detect changed content but do not grant authority to act.

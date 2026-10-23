@@ -150,3 +150,11 @@ docker run --rm -i --network=none deltax-preflight-mcp
 ```
 
 Configure a Docker-capable MCP host with command `docker` and args `["run", "--rm", "-i", "--network=none", "deltax-preflight-mcp"]`. The initial image build downloads the base image and dependencies; the runtime check needs no network. CI builds the image and compares an actual container response against the core report with networking disabled. [Glama maintainer metadata](../glama.json) identifies the repository's verified GitHub maintainer; it does not claim a directory quality score or listing acceptance.
+
+### Optional Glama-managed deployment
+
+The repository image above is for local stdio use. A [Glama container release](https://glama.ai/blog/2026-03-15-how-to-make-a-release) is a separate build that wraps this stdio server with Glama's proxy so users can deploy it through Glama. It is not the repository Dockerfile, the MCPB bundle, or a DeltaX-hosted Evaluate service. Glama's build and hosting environment can process the decision, policy, evidence, and result sent through that deployment. Read [Glama's privacy policy](https://glama.ai/policies/privacy-policy) and use a local installation when those documents must stay in your own environment. Do not place secrets or private evidence in a public demo or inspection call.
+
+Hosting does not change Preflight's trust boundary: callers supply the policy and evidence, and the server does not authenticate their source, select an option, or execute an action. A workflow that needs enforcement must keep its trusted policy and evidence source outside the caller's control. A `SELECTION_REQUIRED` handoff includes the full input documents; minimize them before sending a request to any hosted instance.
+
+Glama releases are made manually from a successful build test at a pinned source commit. Automatic Glama releases are disabled so a GitHub release cannot silently change the managed container. A new Glama release needs a fresh build and functional check. The public [Glama profile](https://glama.ai/mcp/servers/DeltaX-Public/deltax-preflight) describes its current listing and release state; the profile alone does not mean a deployable version exists.
