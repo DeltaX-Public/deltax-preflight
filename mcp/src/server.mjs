@@ -8,8 +8,22 @@ const annotations = {
   openWorldHint: false
 };
 
+const exampleDecision = {
+  schema_version: '2', kind: 'decision', decision_id: 'example-review', context: {},
+  candidates: [{ id: 'review', payload: { action: 'review' } }]
+};
+const examplePolicy = {
+  schema_version: '2', kind: 'policy', policy_id: 'example-policy',
+  constraints: [{ id: 'approved', source: 'candidate', path: '/approved', op: 'eq', value: true }]
+};
+const exampleEvidence = {
+  schema_version: '2', kind: 'evidence', evidence_id: 'example-evidence', source: 'example-source',
+  decision_hash: decisionHash(exampleDecision), context: {},
+  candidates: [{ id: 'review', facts: { approved: true } }]
+};
+
 const digest = { type: 'string', pattern: '^[a-f0-9]{64}$', description: 'Canonical SHA-256 digest.' };
-const documentInput = description => ({ type: 'object', description });
+const documentInput = (description, example) => ({ type: 'object', description, examples: [example] });
 const hashOutput = key => fromJsonSchema({
   type: 'object',
   required: [key],
@@ -94,36 +108,42 @@ export function createPreflightServer() {
   });
 
   server.registerTool('preflight_check', {
-    description: 'Use after concrete candidates, owner-controlled policy, and separately obtained evidence exist. '
+    description: 'Check concrete candidate actions against owner-controlled policy and separately obtained evidence. '
       + 'Returns {result, handoff}: PASS_SINGLE means one proven option, SELECTION_REQUIRED means multiple, '
       + 'REFUSE means none, and EVIDENCE_REQUIRED means at least one remains unproven. Handoff is null except '
-      + 'for SELECTION_REQUIRED. Invalid documents return a tool error with no partial report. This local check '
-      + 'does not verify supplied facts, select or execute actions, or call DeltaX Evaluate. Use the hash tools '
-      + 'to bind evidence to a decision or pin owner policy before checking.',
+      + 'for SELECTION_REQUIRED. Invalid documents return a tool error with no partial report.\n\n'
+      + '### When to use\n- Before an agent action or CI/CD step when a concrete proposal, owner policy, and '
+      + 'proposal-bound evidence are available.\n- To identify admissible options or missing evidence.\n\n'
+      + '### When NOT to use\n- Do not use for natural-language prompt filtering or content moderation.\n'
+      + '- Do not use to rank or choose among multiple admissible options.\n'
+      + '- Do not use to authenticate supplied facts, execute actions, or call DeltaX Evaluate.',
     inputSchema: inputs({
-      decision: documentInput('Preflight v2 object with schema_version "2", a decision_id, context, and 1-100 candidates with unique IDs and payloads. Candidate claims are proposals, not proof.'),
-      policy: documentInput('Owner-controlled Preflight v2 policy object with hard constraints over candidate or context evidence; keep it separate from the proposer.'),
-      evidence: documentInput('Preflight v2 evidence object from an authorized fact source. Its decision_hash must match this exact decision; missing facts remain unproven.')
+      decision: documentInput('Preflight v2 object with schema_version "2", a decision_id, context, and 1-100 candidates with unique IDs and payloads. Candidate claims are proposals, not proof.', exampleDecision),
+      policy: documentInput('Owner-controlled Preflight v2 policy object with hard constraints over candidate or context evidence. Supported op values: eq, in, lte, gte, exists. Keep policy separate from the proposer.', examplePolicy),
+      evidence: documentInput('Preflight v2 evidence object from an authorized fact source. Its decision_hash must match this exact decision; missing facts remain unproven. The example source is illustrative, not authenticated.', exampleEvidence)
     }),
     outputSchema: checkOutput,
     annotations
   }, resultHandler(({ decision, policy, evidence }) => preflight(decision, policy, evidence)));
 
   server.registerTool('preflight_hash_decision', {
-    description: 'Use before an evidence producer binds facts to an exact proposal. Validates a Preflight v2 '
-      + 'decision and returns {decision_hash}, its canonical SHA-256 digest. Invalid decisions return a tool '
-      + 'error, not a hash. This hash does not authenticate facts or approve an action; use preflight_check '
-      + 'when policy and evidence are ready.',
-    inputSchema: inputs({ decision: documentInput('Preflight v2 object with schema_version "2", decision_id, context, and 1-100 unique candidate IDs with payloads.') }),
+    description: 'Validate a Preflight v2 decision and return {decision_hash}, its canonical SHA-256 digest. '
+      + 'Invalid decisions return a tool error, not a hash.\n\n'
+      + '### When to use\n- Before an evidence producer binds facts to the exact proposal it checked.\n\n'
+      + '### When NOT to use\n- Do not treat the hash as proof of facts, approval of an action, or a '
+      + 'substitute for preflight_check when policy and evidence are ready.',
+    inputSchema: inputs({ decision: documentInput('Preflight v2 object with schema_version "2", decision_id, context, and 1-100 unique candidate IDs with payloads.', exampleDecision) }),
     outputSchema: hashOutput('decision_hash'),
     annotations
   }, resultHandler(({ decision }) => ({ decision_hash: decisionHash(decision) })));
 
   server.registerTool('preflight_hash_policy', {
-    description: 'Use to pin owner-controlled rules outside an untrusted proposal. Validates a Preflight v2 '
-      + 'policy and returns {policy_hash}, its canonical SHA-256 digest. Invalid policies return a tool error, '
-      + 'not a hash. The hash alone does not establish policy ownership; use preflight_check to evaluate candidates.',
-    inputSchema: inputs({ policy: documentInput('Owner-controlled Preflight v2 object with schema_version "2", policy_id, and 1-100 hard constraints using eq, in, lte, gte, or exists.') }),
+    description: 'Validate a Preflight v2 policy and return {policy_hash}, its canonical SHA-256 digest. '
+      + 'Invalid policies return a tool error, not a hash.\n\n'
+      + '### When to use\n- To pin owner-controlled rules outside an untrusted proposal.\n\n'
+      + '### When NOT to use\n- Do not treat a caller-supplied hash as proof of policy ownership. '
+      + 'Use preflight_check to evaluate candidates once policy and evidence are ready.',
+    inputSchema: inputs({ policy: documentInput('Owner-controlled Preflight v2 object with schema_version "2", policy_id, and 1-100 hard constraints using eq, in, lte, gte, or exists.', examplePolicy) }),
     outputSchema: hashOutput('policy_hash'),
     annotations
   }, resultHandler(({ policy }) => ({ policy_hash: policyHash(policy) })));
