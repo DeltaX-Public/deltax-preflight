@@ -5,7 +5,9 @@ import { preflight, policyHash, decisionHash, InputError } from '../src/prefligh
 const MAX_BYTES = 1024 * 1024;
 
 function usage() {
-  process.stderr.write('Usage: deltax-preflight <decision.json|-> --policy <policy.json> --evidence <evidence.json> [--expect-policy-sha256 <hash>] [--json]\n');
+  process.stderr.write('Usage: deltax-preflight try [--example | --save <new-folder> | --replay <saved-folder>]\n');
+  process.stderr.write('       deltax-preflight init <new-folder>\n');
+  process.stderr.write('       deltax-preflight <decision.json|-> --policy <policy.json> --evidence <evidence.json> [--expect-policy-sha256 <hash>] [--json]\n');
   process.stderr.write('       deltax-preflight --hash-policy <policy.json>\n');
   process.stderr.write('       deltax-preflight --hash-decision <decision.json>\n');
   process.exitCode = 64;
@@ -89,7 +91,12 @@ async function main() {
     : result.status === 'REFUSE' ? 3 : 4;
 }
 
-main().catch(error => {
-  process.stderr.write(`Preflight input error: ${error.message}\n`);
-  process.exitCode = error instanceof InputError || error.code === 'ENOENT' ? 64 : 1;
-});
+if (process.argv[2] === 'try' || process.argv[2] === 'init') {
+  const command = process.argv.splice(2, 1)[0];
+  await import(command === 'try' ? './try.mjs' : './init.mjs');
+} else {
+  main().catch(error => {
+    process.stderr.write(`Preflight input error: ${error.message}\n`);
+    process.exitCode = error instanceof InputError || error.code === 'ENOENT' ? 64 : 1;
+  });
+}
