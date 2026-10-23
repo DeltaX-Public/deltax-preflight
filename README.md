@@ -32,7 +32,16 @@ This is a **public preview**. The core validator has no runtime dependencies and
 
 ## Try it without making files
 
-Requires Git and Node.js 20 or later. No account or installation step is needed:
+With Node.js 20 or later, the npm package provides a one-command local trial:
+
+```sh
+npx --yes deltax-preflight@0.1.1 try --example
+npx --yes deltax-preflight@0.1.1 try
+```
+
+The first command runs a synthetic example. The second opens an interactive worksheet. To save your inputs, use `npx --yes deltax-preflight@0.1.1 try --save my-check`. The npm package contains the local checker, worksheet, and schema; it does not install the MCP server or GitHub Action. Nothing is sent to DeltaX Evaluate.
+
+You can also run the same worksheet from a Git checkout. This requires Git and Node.js 20 or later, but no npm account:
 
 ```sh
 git clone https://github.com/DeltaX-Public/deltax-preflight.git
@@ -55,7 +64,7 @@ More than one option meets the stated requirements. Selection remains open.
 
 ## Use it in a workflow
 
-For a working GitHub pull request gate, run `node bin/install-github.mjs /path/to/your-repo` from this checkout. It adds one workflow and three example files without overwriting existing files. The workflow checks proposed agent actions against an owner-reviewed list; it uses the base branch for its policy and evidence source, treats the pull request proposal as data, and pins this checkout's Preflight commit and policy hash. Review the files and commit them to your repository's default branch before opening a proposal pull request. [The complete recipe](examples/github-agent-gate/README.md) explains the results and how to require the check before merge. The check does not run any proposed action.
+For a working GitHub pull request gate, clone this repository and run `node bin/install-github.mjs /path/to/your-repo` from the checkout. This installer needs a reviewed Git commit to pin in the generated workflow, so it is not part of the npm package. It adds one workflow and three example files without overwriting existing files. The workflow checks proposed agent actions against an owner-reviewed list; it uses the base branch for its policy and evidence source, treats the pull request proposal as data, and pins this checkout's Preflight commit and policy hash. Review the files and commit them to your repository's default branch before opening a proposal pull request. [The complete recipe](examples/github-agent-gate/README.md) explains the results and how to require the check before merge. The check does not run any proposed action.
 
 The [independent example repository](https://github.com/DeltaX-Public/deltax-preflight-example) ran this recipe on GitHub: [one allowed action passed and merged](https://github.com/DeltaX-Public/deltax-preflight-example/pull/1), while [a changed payload stopped for evidence](https://github.com/DeltaX-Public/deltax-preflight-example/pull/2) and [two allowed actions stopped for selection](https://github.com/DeltaX-Public/deltax-preflight-example/pull/3). Its main branch requires the `preflight` check.
 
@@ -143,4 +152,4 @@ The first prototype put `constraints` and candidate `facts` in one decision enve
 
 ## License
 
-DeltaX Preflight is licensed under the [Apache License 2.0](LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The package remains marked `private` because this preview is distributed through GitHub rather than npm.
+DeltaX Preflight is licensed under the [Apache License 2.0](LICENSE). This license covers this repository and the packaged local checker; it does not license the separate DeltaX Evaluate service or its internals.
