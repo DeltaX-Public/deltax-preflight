@@ -52,7 +52,7 @@ test('the stdio MCP wrapper preserves the core boundary and remains usable after
     assertJsonResponse(await check(input), preflight(input.decision, input.policy, input.evidence));
   };
 
-  await t.test('discovery exposes exactly the three local tools with strict outer schemas', async () => {
+  await t.test('discovery exposes three local tools with truthful input, output, and behavior metadata', async () => {
     const { tools } = await client.listTools();
     assert.deepEqual(tools.map(tool => tool.name).sort(), [
       'preflight_check', 'preflight_hash_decision', 'preflight_hash_policy',
@@ -66,6 +66,24 @@ test('the stdio MCP wrapper preserves the core boundary and remains usable after
       assert.equal(tool.inputSchema.type, 'object');
       assert.equal(tool.inputSchema.additionalProperties, false);
       assert.deepEqual([...tool.inputSchema.required].sort(), requiredByName[tool.name]);
+      assert.deepEqual(tool.annotations, {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
+      });
+      assert.equal(tool.outputSchema.type, 'object');
+      assert.equal(tool.outputSchema.additionalProperties, false);
+      if (tool.name === 'preflight_check') {
+        assert.deepEqual([...tool.outputSchema.required].sort(), ['handoff', 'result']);
+        assert.deepEqual(tool.outputSchema.properties.result.properties.status.enum,
+          ['PASS_SINGLE', 'SELECTION_REQUIRED', 'REFUSE', 'EVIDENCE_REQUIRED']);
+        assert.deepEqual(tool.outputSchema.properties.handoff.type, ['object', 'null']);
+      } else {
+        const hash = tool.name === 'preflight_hash_decision' ? 'decision_hash' : 'policy_hash';
+        assert.deepEqual(tool.outputSchema.required, [hash]);
+        assert.equal(tool.outputSchema.properties[hash].pattern, '^[a-f0-9]{64}$');
+      }
     }
   });
 
