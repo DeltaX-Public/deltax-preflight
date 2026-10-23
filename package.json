@@ -1,13 +1,30 @@
 {
   "name": "deltax-preflight",
   "version": "0.1.0",
-  "private": true,
+  "description": "Local decision preflight for agent actions and automation workflows",
   "license": "Apache-2.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeltaX-Public/deltax-preflight.git"
+  },
+  "homepage": "https://github.com/DeltaX-Public/deltax-preflight#readme",
+  "bugs": "https://github.com/DeltaX-Public/deltax-preflight/issues",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": ["preflight", "decision", "validation", "agents", "automation"],
+  "files": [
+    "bin/preflight.mjs",
+    "bin/init.mjs",
+    "bin/try.mjs",
+    "src/",
+    "schema/",
+    "examples/*.json"
+  ],
   "bin": {
     "deltax-preflight": "./bin/preflight.mjs",
     "deltax-preflight-init": "./bin/init.mjs",
-    "deltax-preflight-install-github": "./bin/install-github.mjs",
     "deltax-preflight-try": "./bin/try.mjs"
   },
   "exports": {

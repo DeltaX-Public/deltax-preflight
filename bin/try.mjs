@@ -11,7 +11,7 @@ const example = args.length === 1 && args[0] === '--example';
 const save = args.length === 2 && args[0] === '--save' && !args[1].startsWith('-') ? resolve(args[1]) : null;
 const replay = args.length === 2 && args[0] === '--replay' && !args[1].startsWith('-') ? resolve(args[1]) : null;
 if ((args.length > 0 && !example && !save && !replay) || (args.length === 0 && !stdin.isTTY)) {
-  process.stderr.write('Usage: node bin/try.mjs [--example | --save <new-folder> | --replay <saved-folder>]\n');
+  process.stderr.write('Usage: deltax-preflight-try [--example | --save <new-folder> | --replay <saved-folder>]\n');
   process.stderr.write('Run without arguments in a terminal for an interactive worksheet.\n');
   process.exit(64);
 }
