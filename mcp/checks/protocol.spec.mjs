@@ -63,11 +63,14 @@ test('the stdio MCP wrapper preserves the core boundary and remains usable after
       preflight_hash_policy: ['policy'],
     };
     for (const tool of tools) {
+      assert.match(tool.description, /### When to use/);
+      assert.match(tool.description, /### When NOT to use/);
       assert.equal(tool.inputSchema.type, 'object');
       assert.equal(tool.inputSchema.additionalProperties, false);
       assert.deepEqual([...tool.inputSchema.required].sort(), requiredByName[tool.name]);
       for (const key of tool.inputSchema.required) {
         assert.equal(tool.inputSchema.properties[key].type, 'object', `${tool.name}.${key} must be renderable as a document input`);
+        assert.equal(tool.inputSchema.properties[key].examples?.length, 1, `${tool.name}.${key} needs one valid example`);
       }
       assert.deepEqual(tool.annotations, {
         readOnlyHint: true,
@@ -88,6 +91,13 @@ test('the stdio MCP wrapper preserves the core boundary and remains usable after
         assert.equal(tool.outputSchema.properties[hash].pattern, '^[a-f0-9]{64}$');
       }
     }
+    const checkTool = tools.find(tool => tool.name === 'preflight_check');
+    const advertised = Object.fromEntries(['decision', 'policy', 'evidence'].map(key =>
+      [key, checkTool.inputSchema.properties[key].examples[0]]));
+    assert.equal(advertised.evidence.decision_hash, decisionHash(advertised.decision));
+    assert.equal(preflight(advertised.decision, advertised.policy, advertised.evidence).result.status, 'PASS_SINGLE');
+    assertJsonResponse(await check(advertised),
+      preflight(advertised.decision, advertised.policy, advertised.evidence));
   });
 
   for (const status of ['SELECTION_REQUIRED', 'PASS_SINGLE', 'REFUSE', 'EVIDENCE_REQUIRED']) {
