@@ -66,6 +66,9 @@ test('the stdio MCP wrapper preserves the core boundary and remains usable after
       assert.equal(tool.inputSchema.type, 'object');
       assert.equal(tool.inputSchema.additionalProperties, false);
       assert.deepEqual([...tool.inputSchema.required].sort(), requiredByName[tool.name]);
+      for (const key of tool.inputSchema.required) {
+        assert.equal(tool.inputSchema.properties[key].type, 'object', `${tool.name}.${key} must be renderable as a document input`);
+      }
       assert.deepEqual(tool.annotations, {
         readOnlyHint: true,
         destructiveHint: false,
@@ -138,9 +141,6 @@ test('the stdio MCP wrapper preserves the core boundary and remains usable after
   });
 
   const badInputs = [
-    ['null decision', input => { input.decision = null; }],
-    ['array policy', input => { input.policy = []; }],
-    ['scalar evidence', input => { input.evidence = 'invalid'; }],
     ['proposal/evidence hash mismatch', input => { input.decision.candidates[1].payload.target = 'different-service'; }],
     ['unknown evidence candidate', input => { input.evidence.candidates[0].id = 'unknown_candidate'; }],
     ['duplicate proposal candidate IDs', input => { input.decision.candidates[1].id = input.decision.candidates[0].id; }],
@@ -184,6 +184,9 @@ test('the stdio MCP wrapper preserves the core boundary and remains usable after
     ['missing all arguments', { name: 'preflight_check' }],
     ['missing required evidence', { name: 'preflight_check', arguments: { decision: valid.decision, policy: valid.policy } }],
     ['extra outer argument', { name: 'preflight_check', arguments: { ...valid, evaluate: true } }],
+    ['null decision document', { name: 'preflight_check', arguments: { ...valid, decision: null } }],
+    ['array policy document', { name: 'preflight_check', arguments: { ...valid, policy: [] } }],
+    ['scalar evidence document', { name: 'preflight_check', arguments: { ...valid, evidence: 'invalid' } }],
     ['null arguments', { name: 'preflight_check', arguments: null }],
     ['array arguments', { name: 'preflight_check', arguments: [] }],
     ['missing hash decision', { name: 'preflight_hash_decision', arguments: {} }],

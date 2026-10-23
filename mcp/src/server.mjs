@@ -9,6 +9,7 @@ const annotations = {
 };
 
 const digest = { type: 'string', pattern: '^[a-f0-9]{64}$', description: 'Canonical SHA-256 digest.' };
+const documentInput = description => ({ type: 'object', description });
 const hashOutput = key => fromJsonSchema({
   type: 'object',
   required: [key],
@@ -57,7 +58,7 @@ const checkOutput = fromJsonSchema({
   }
 });
 
-// Only validate the tool envelope here. The unchanged core owns all document validation.
+// Check the tool envelope and document JSON types here. The core owns document semantics.
 function inputs(properties) {
   return fromJsonSchema({
     type: 'object',
@@ -100,9 +101,9 @@ export function createPreflightServer() {
       + 'does not verify supplied facts, select or execute actions, or call DeltaX Evaluate. Use the hash tools '
       + 'to bind evidence to a decision or pin owner policy before checking.',
     inputSchema: inputs({
-      decision: { description: 'Preflight v2 object with schema_version "2", a decision_id, context, and 1-100 candidates with unique IDs and payloads. Candidate claims are proposals, not proof.' },
-      policy: { description: 'Owner-controlled Preflight v2 policy object with hard constraints over candidate or context evidence; keep it separate from the proposer.' },
-      evidence: { description: 'Preflight v2 evidence object from an authorized fact source. Its decision_hash must match this exact decision; missing facts remain unproven.' }
+      decision: documentInput('Preflight v2 object with schema_version "2", a decision_id, context, and 1-100 candidates with unique IDs and payloads. Candidate claims are proposals, not proof.'),
+      policy: documentInput('Owner-controlled Preflight v2 policy object with hard constraints over candidate or context evidence; keep it separate from the proposer.'),
+      evidence: documentInput('Preflight v2 evidence object from an authorized fact source. Its decision_hash must match this exact decision; missing facts remain unproven.')
     }),
     outputSchema: checkOutput,
     annotations
@@ -113,7 +114,7 @@ export function createPreflightServer() {
       + 'decision and returns {decision_hash}, its canonical SHA-256 digest. Invalid decisions return a tool '
       + 'error, not a hash. This hash does not authenticate facts or approve an action; use preflight_check '
       + 'when policy and evidence are ready.',
-    inputSchema: inputs({ decision: { description: 'Preflight v2 object with schema_version "2", decision_id, context, and 1-100 unique candidate IDs with payloads.' } }),
+    inputSchema: inputs({ decision: documentInput('Preflight v2 object with schema_version "2", decision_id, context, and 1-100 unique candidate IDs with payloads.') }),
     outputSchema: hashOutput('decision_hash'),
     annotations
   }, resultHandler(({ decision }) => ({ decision_hash: decisionHash(decision) })));
@@ -122,7 +123,7 @@ export function createPreflightServer() {
     description: 'Use to pin owner-controlled rules outside an untrusted proposal. Validates a Preflight v2 '
       + 'policy and returns {policy_hash}, its canonical SHA-256 digest. Invalid policies return a tool error, '
       + 'not a hash. The hash alone does not establish policy ownership; use preflight_check to evaluate candidates.',
-    inputSchema: inputs({ policy: { description: 'Owner-controlled Preflight v2 object with schema_version "2", policy_id, and 1-100 hard constraints using eq, in, lte, gte, or exists.' } }),
+    inputSchema: inputs({ policy: documentInput('Owner-controlled Preflight v2 object with schema_version "2", policy_id, and 1-100 hard constraints using eq, in, lte, gte, or exists.') }),
     outputSchema: hashOutput('policy_hash'),
     annotations
   }, resultHandler(({ policy }) => ({ policy_hash: policyHash(policy) })));
