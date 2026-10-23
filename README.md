@@ -6,8 +6,21 @@ DeltaX Preflight checks proposed actions against owner-controlled rules and evid
 
 - [Try the live demo](https://deltax-public.github.io/deltax-preflight/) — no download, account or API key
 - [Use the GitHub Action on Marketplace](https://github.com/marketplace/actions/deltax-preflight)
-- [Install the owner-reviewed pull request gate](examples/github-agent-gate/README.md)
-- [Connect the local MCP server](mcp/README.md) · [Download the MCP bundle](https://github.com/DeltaX-Public/deltax-preflight/releases/tag/mcp-v0.1.0)
+- [Install the owner-reviewed pull request gate](https://github.com/DeltaX-Public/deltax-preflight/blob/main/examples/github-agent-gate/README.md)
+- [Connect the local MCP server](https://github.com/DeltaX-Public/deltax-preflight/blob/main/mcp/README.md) · [Download the MCP bundle](https://github.com/DeltaX-Public/deltax-preflight/releases/tag/mcp-v0.1.0)
+
+## Install the command-line package
+
+Requires Node.js 20 or later. After the npm release, install the core validator with:
+
+```sh
+npm install --global deltax-preflight
+deltax-preflight-try --example
+deltax-preflight-init my-check
+deltax-preflight my-check/decision.json --policy my-check/policy.json --evidence my-check/evidence.json
+```
+
+The sample returns `SELECTION_REQUIRED`. The starter files return `EVIDENCE_REQUIRED` until you provide trusted facts. Both results are intentional and select or execute nothing. The npm package also exports the validator and bounded Evaluate bridge for JavaScript integrations. The GitHub Action and optional MCP server have [separate setup instructions](https://github.com/DeltaX-Public/deltax-preflight#use-it-in-a-workflow); the npm package does not install the MCP server.
 
 Keep policy and evidence under the workflow owner's control. Preflight checks the supplied facts; it does not establish their truth, choose among multiple allowed options, or execute actions. To block a GitHub merge, configure the workflow check as required. The MCP server evaluates its caller's documents; the surrounding application controls trust and enforcement. DeltaX Evaluate is an optional, separate integration.
 
@@ -15,9 +28,9 @@ Keep policy and evidence under the workflow owner's control. Preflight checks th
 
 An agent proposes `inspect_change` with `scope: local`. The owner's reviewed manifest covers that exact payload. If the agent keeps the same action ID but changes the scope to `public`, that review no longer supplies evidence for the new proposal.
 
-[![Preflight walkthrough: a reviewed local proposal, changed payload, two valid options, and refusal](docs/demo/poster.svg)](https://deltax-public.github.io/deltax-preflight/)
+[![Preflight walkthrough: a reviewed local proposal, changed payload, two valid options, and refusal](https://raw.githubusercontent.com/DeltaX-Public/deltax-preflight/main/docs/demo/poster.svg)](https://deltax-public.github.io/deltax-preflight/)
 
-[Try the live visual walkthrough](https://deltax-public.github.io/deltax-preflight/): four selectable scenes, synthetic inputs, and precomputed results from the real validator. No download or API key is needed. You can also [run it offline](docs/demo/README.md).
+[Try the live visual walkthrough](https://deltax-public.github.io/deltax-preflight/): four selectable scenes, synthetic inputs, and precomputed results from the real validator. No download or API key is needed. You can also [run it offline](https://github.com/DeltaX-Public/deltax-preflight/blob/main/docs/demo/README.md).
 
 | Proposal in the example | Preflight result | What remains |
 | --- | --- | --- |
@@ -26,9 +39,9 @@ An agent proposes `inspect_change` with `scope: local`. The owner's reviewed man
 | Two exact, reviewed local options | `SELECTION_REQUIRED` | A human or separately authorized system must choose. |
 | Only the forbidden publish option | `REFUSE` | No admissible option remains. |
 
-These synthetic scenarios use the [owner-reviewed gate fixtures](examples/github-agent-gate/README.md). The [independent example pull requests](https://github.com/DeltaX-Public/deltax-preflight-example/pulls?q=is%3Apr+is%3Aclosed) show actual GitHub checks for the first three outcomes.
+These synthetic scenarios use the [owner-reviewed gate fixtures](https://github.com/DeltaX-Public/deltax-preflight/blob/main/examples/github-agent-gate/README.md). The [independent example pull requests](https://github.com/DeltaX-Public/deltax-preflight-example/pulls?q=is%3Apr+is%3Aclosed) show actual GitHub checks for the first three outcomes.
 
-This is a **public preview**. The core validator has no runtime dependencies and works offline. [ADR 0002](docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [R&D issue](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25) and [issue evidence](docs/ISSUE-25-evidence.md) record the earlier prototype checks and their limits.
+This is a **public preview**. The core validator has no runtime dependencies and works offline. [ADR 0002](https://github.com/DeltaX-Public/deltax-preflight/blob/main/docs/ADR-0002-trusted-policy-and-evidence.md) defines the local protocol; [ADR 0003](https://github.com/DeltaX-Public/deltax-preflight/blob/main/docs/ADR-0003-evaluate-bridge.md) defines the bounded handoff. The [R&D issue](https://github.com/DeltaX-Public/deltax-connectome-entity/issues/25) and [issue evidence](https://github.com/DeltaX-Public/deltax-preflight/blob/main/docs/ISSUE-25-evidence.md) record the earlier prototype checks and their limits.
 
 ## Try it without making files
 
@@ -55,7 +68,7 @@ More than one option meets the stated requirements. Selection remains open.
 
 ## Use it in a workflow
 
-For a working GitHub pull request gate, run `node bin/install-github.mjs /path/to/your-repo` from this checkout. It adds one workflow and three example files without overwriting existing files. The workflow checks proposed agent actions against an owner-reviewed list; it uses the base branch for its policy and evidence source, treats the pull request proposal as data, and pins this checkout's Preflight commit and policy hash. Review the files and commit them to your repository's default branch before opening a proposal pull request. [The complete recipe](examples/github-agent-gate/README.md) explains the results and how to require the check before merge. The check does not run any proposed action.
+For a working GitHub pull request gate, run `node bin/install-github.mjs /path/to/your-repo` from this checkout. It adds one workflow and three example files without overwriting existing files. The workflow checks proposed agent actions against an owner-reviewed list; it uses the base branch for its policy and evidence source, treats the pull request proposal as data, and pins this checkout's Preflight commit and policy hash. Review the files and commit them to your repository's default branch before opening a proposal pull request. [The complete recipe](https://github.com/DeltaX-Public/deltax-preflight/blob/main/examples/github-agent-gate/README.md) explains the results and how to require the check before merge. The check does not run any proposed action.
 
 The [independent example repository](https://github.com/DeltaX-Public/deltax-preflight-example) ran this recipe on GitHub: [one allowed action passed and merged](https://github.com/DeltaX-Public/deltax-preflight-example/pull/1), while [a changed payload stopped for evidence](https://github.com/DeltaX-Public/deltax-preflight-example/pull/2) and [two allowed actions stopped for selection](https://github.com/DeltaX-Public/deltax-preflight-example/pull/3). Its main branch requires the `preflight` check.
 
@@ -85,13 +98,13 @@ The first example intentionally exits with code `2`: two valid options remain, s
 
 The decision path may be `-` for standard input. Use `--json` to emit `{ "result": ..., "handoff": ... }`. For a pinned policy, add `--expect-policy-sha256 <hash>`. Each input is limited to 1 MiB by the CLI and Action.
 
-The [decision](schema/decision.v2.schema.json), [policy](schema/policy.v2.schema.json), and [evidence](schema/evidence.v2.schema.json) files have separate JSON Schemas. The examples include a [CI deployment proposal](examples/ci-deploy.json) and an [agent action proposal](examples/agent-action.json), each with matching policy and evidence files. Candidate IDs and payloads express what is proposed. Only evidence facts are checked against policy.
+The [decision](https://github.com/DeltaX-Public/deltax-preflight/blob/main/schema/decision.v2.schema.json), [policy](https://github.com/DeltaX-Public/deltax-preflight/blob/main/schema/policy.v2.schema.json), and [evidence](https://github.com/DeltaX-Public/deltax-preflight/blob/main/schema/evidence.v2.schema.json) files have separate JSON Schemas. The examples include a [CI deployment proposal](https://github.com/DeltaX-Public/deltax-preflight/blob/main/examples/ci-deploy.json) and an [agent action proposal](https://github.com/DeltaX-Public/deltax-preflight/blob/main/examples/agent-action.json), each with matching policy and evidence files. Candidate IDs and payloads express what is proposed. Only evidence facts are checked against policy.
 
 ## Local MCP server
 
-The optional [MCP adapter](mcp/README.md) exposes the same validator and canonical decision/policy hash helpers over local stdio. Install its separate dependencies with `npm ci --prefix mcp --ignore-scripts`, then configure your MCP host to launch `node /absolute/path/to/deltax-preflight/mcp/bin/server.mjs`. The adapter returns the existing result and handoff unchanged. It does not call Evaluate, select or execute candidates, authenticate caller-supplied facts, or add dependencies to the core validator. See the adapter guide for tool arguments, client configuration, and tests.
+The optional [MCP adapter](https://github.com/DeltaX-Public/deltax-preflight/blob/main/mcp/README.md) exposes the same validator and canonical decision/policy hash helpers over local stdio. Install its separate dependencies with `npm ci --prefix mcp --ignore-scripts`, then configure your MCP host to launch `node /absolute/path/to/deltax-preflight/mcp/bin/server.mjs`. The adapter returns the existing result and handoff unchanged. It does not call Evaluate, select or execute candidates, authenticate caller-supplied facts, or add dependencies to the core validator. See the adapter guide for tool arguments, client configuration, and tests.
 
-An optional [Glama-managed container deployment](mcp/README.md#optional-glama-managed-deployment) runs through Glama's proxy and infrastructure. Review that data boundary before sending policy, evidence, or candidate payloads; the local stdio setup above keeps them in the MCP host's environment.
+An optional [Glama-managed container deployment](https://github.com/DeltaX-Public/deltax-preflight/blob/main/mcp/README.md#optional-glama-managed-deployment) runs through Glama's proxy and infrastructure. Review that data boundary before sending policy, evidence, or candidate payloads; the local stdio setup above keeps them in the MCP host's environment.
 
 ## Trust boundary
 
@@ -114,7 +127,7 @@ Only `SELECTION_REQUIRED` emits the local Evaluate handoff. It contains the orig
 
 ## Bounded Evaluate bridge
 
-The optional [bridge](src/evaluate-bridge.mjs) turns a verified `SELECTION_REQUIRED` handoff into the fixed bounded-review request described in the [DeltaX developer guide](https://deltaxevaluate.com/developers). It sends only proven admissible candidates with explicitly supplied objective and scalar context; it does not copy the full proposal, policy, or evidence into the request. The bridge accepts at most eight review candidates and refuses external candidates as selectable options. A success response must match the `2026-09-16.beta2` shape, preserve all false authority and effect flags, and select only an admissible candidate or return `governed_noop_refusal`.
+The optional [bridge](https://github.com/DeltaX-Public/deltax-preflight/blob/main/src/evaluate-bridge.mjs) turns a verified `SELECTION_REQUIRED` handoff into the fixed bounded-review request described in the [DeltaX developer guide](https://deltaxevaluate.com/developers). It sends only proven admissible candidates with explicitly supplied objective and scalar context; it does not copy the full proposal, policy, or evidence into the request. The bridge accepts at most eight review candidates and refuses external candidates as selectable options. A success response must match the `2026-09-16.beta2` shape, preserve all false authority and effect flags, and select only an admissible candidate or return `governed_noop_refusal`.
 
 `node bin/demo-handoff.mjs` runs a **synthetic offline demonstration**: three options enter Preflight, two survive, and a synthetic contract-valid response selects one review step. It records both receipts and the proposed, admissible, and selected IDs. This demo makes no API call and supplies no credential. Hosted access remains restricted; use an assigned client and its transport checks for any separately authorized live call. The bridge does not rank candidates or grant action authority.
 
@@ -135,7 +148,7 @@ steps:
 
 The Action outputs `status`, `admissible_count`, `receipt_hash`, and `policy_hash`. It fails the job for unresolved selection, refusal, or missing evidence. The example paths only illustrate the interface: the calling workflow must actually protect its policy and evidence sources.
 
-The [proposal integration workflow](.github/workflows/proposal-preflight.yml) demonstrates that boundary for this repository. It runs trusted action code, policy, and a reviewed candidate manifest from the pull request's base commit. It checks out the proposed decision separately as **data only**. The trusted evidence producer compares each candidate's exact payload with the manifest and leaves changed or unknown options unproven. The workflow has read-only repository permission and does not execute proposed code. Its policy hash is pinned in the base workflow. GitHub `main` branch protection requires a PR and passing `preflight` and `test` checks, including for administrators; see the [positive and negative run evidence](docs/ISSUE-25-evidence.md).
+The [proposal integration workflow](https://github.com/DeltaX-Public/deltax-preflight/blob/main/.github/workflows/proposal-preflight.yml) demonstrates that boundary for this repository. It runs trusted action code, policy, and a reviewed candidate manifest from the pull request's base commit. It checks out the proposed decision separately as **data only**. The trusted evidence producer compares each candidate's exact payload with the manifest and leaves changed or unknown options unproven. The workflow has read-only repository permission and does not execute proposed code. Its policy hash is pinned in the base workflow. GitHub `main` branch protection requires a PR and passing `preflight` and `test` checks, including for administrators; see the [positive and negative run evidence](https://github.com/DeltaX-Public/deltax-preflight/blob/main/docs/ISSUE-25-evidence.md).
 
 ## Migration from v1
 
@@ -143,4 +156,4 @@ The first prototype put `constraints` and candidate `facts` in one decision enve
 
 ## License
 
-DeltaX Preflight is licensed under the [Apache License 2.0](LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The package remains marked `private` because this preview is distributed through GitHub rather than npm.
+DeltaX Preflight is licensed under the [Apache License 2.0](https://github.com/DeltaX-Public/deltax-preflight/blob/main/LICENSE). This license covers this repository; it does not license the separate DeltaX Evaluate service or its internals. The core command-line package is prepared for npm; the optional MCP adapter remains distributed separately.

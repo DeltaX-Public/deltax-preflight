@@ -11,6 +11,23 @@ jobs:
         with:
           node-version: '24'
       - run: npm test
+      - name: Test npm package from its archive
+        run: |
+          archive="$(npm pack --pack-destination "$RUNNER_TEMP" --ignore-scripts --silent)"
+          install_root="$RUNNER_TEMP/preflight-npm-smoke"
+          npm install --prefix "$install_root" "$RUNNER_TEMP/$archive" --offline --ignore-scripts --no-audit --no-fund
+          commands="$install_root/node_modules/.bin"
+          examples="$install_root/node_modules/deltax-preflight/examples"
+          "$commands/deltax-preflight-try" --example
+          "$commands/deltax-preflight-init" "$RUNNER_TEMP/preflight-starter"
+          if "$commands/deltax-preflight" "$RUNNER_TEMP/preflight-starter/decision.json" --policy "$RUNNER_TEMP/preflight-starter/policy.json" --evidence "$RUNNER_TEMP/preflight-starter/evidence.json"; then
+            echo 'Unproven starter files unexpectedly passed' >&2
+            exit 1
+          else
+            test "$?" -eq 4
+          fi
+          "$commands/deltax-preflight" "$examples/single.json" --policy "$examples/single-policy.json" --evidence "$examples/single-evidence.json"
+          test ! -e "$install_root/node_modules/deltax-preflight/mcp"
       - run: node docs/demo/generate-fixtures.mjs --check
       - uses: ./
         with:
