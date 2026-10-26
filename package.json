@@ -1,6 +1,6 @@
 {
   "name": "deltax-preflight",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local decision preflight for agent actions and automation workflows",
   "license": "Apache-2.0",
   "type": "module",

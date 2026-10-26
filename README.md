@@ -5,7 +5,7 @@
 DeltaX Preflight checks proposed actions against owner-controlled rules and evidence. Use the **GitHub Action** as a required workflow check, or connect the **local MCP server** to check proposals from an agent. Both use the same deterministic validator. No DeltaX account or API key is needed.
 
 - [Try the live demo](https://deltax-public.github.io/deltax-preflight/) — no download, account or API key
-- [Install the core package from npm](https://www.npmjs.com/package/deltax-preflight/v/0.1.0)
+- [Install the core package from npm](https://www.npmjs.com/package/deltax-preflight)
 - [Use the GitHub Action on Marketplace](https://github.com/marketplace/actions/deltax-preflight)
 - [Install the owner-reviewed pull request gate](https://github.com/DeltaX-Public/deltax-preflight/blob/main/examples/github-agent-gate/README.md)
 - [Connect the local MCP server](https://github.com/DeltaX-Public/deltax-preflight/blob/main/mcp/README.md) · [Download the MCP bundle](https://github.com/DeltaX-Public/deltax-preflight/releases/tag/mcp-v0.1.0)
