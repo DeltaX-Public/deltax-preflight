@@ -1,5 +1,10 @@
 # DeltaX Preflight
 
+[![Core tests](https://github.com/DeltaX-Public/deltax-preflight/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/DeltaX-Public/deltax-preflight/actions/workflows/test.yml)
+[![MCP adapter tests](https://github.com/DeltaX-Public/deltax-preflight/actions/workflows/test-mcp.yml/badge.svg?branch=main)](https://github.com/DeltaX-Public/deltax-preflight/actions/workflows/test-mcp.yml)
+[![npm version](https://img.shields.io/npm/v/deltax-preflight)](https://www.npmjs.com/package/deltax-preflight)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
+
 **Check an agent's proposed next step before a pull request can merge.**
 
 DeltaX Preflight checks proposed actions against owner-controlled rules and evidence. Use the **GitHub Action** as a required workflow check, or connect the **local MCP server** to check proposals from an agent. Both use the same deterministic validator. No DeltaX account or API key is needed.
