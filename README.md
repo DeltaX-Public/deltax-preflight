@@ -5,9 +5,11 @@
 [![npm version](https://img.shields.io/npm/v/deltax-preflight)](https://www.npmjs.com/package/deltax-preflight)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 
-**Check an agent's proposed next step before a pull request can merge.**
+**Check an agent's proposed next step before a consequential workflow decision.**
 
-DeltaX Preflight checks proposed actions against owner-controlled rules and evidence. Use the **GitHub Action** as a required workflow check, or connect the **local MCP server** to check proposals from an agent. Both use the same deterministic validator. No DeltaX account or API key is needed.
+DeltaX Preflight checks proposed actions against owner-controlled rules and evidence. Use the **GitHub Action** as a required pull request check, the **local MCP server** before an agent tool call, or the **CLI** in another workflow. All use the same deterministic validator. No DeltaX account or API key is needed for local validation.
+
+**New to Preflight?** Start with [what it does and where it fits](docs/START-HERE.md), then [build your first check](docs/BUILD-YOUR-FIRST-CHECK.md). See [workflow problems and integration patterns](docs/WORKFLOW-PATTERNS.md) and [what to do with a result](docs/RESULTS-AND-OUTCOMES.md), including a proposed way to use later outcomes in task memory and process improvement.
 
 - [Try the live demo](https://deltax-public.github.io/deltax-preflight/) — no download, account or API key
 - [Install the core package from npm](https://www.npmjs.com/package/deltax-preflight)
