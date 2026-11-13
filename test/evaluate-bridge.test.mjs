@@ -17,6 +17,12 @@ const options = {
   objective: 'Choose a bounded review step for a synthetic packet.',
   context: { evidence_kind: 'synthetic', external_actions_allowed: false }
 };
+const httpBody = result => ({
+  receipt_id: 'synthetic-http-receipt',
+  evaluated_at: '2026-10-06T00:00:00Z',
+  counted: true,
+  result
+});
 
 test('bridge projects only admissible bounded review candidates', async () => {
   const { result, handoff, response } = await fixture();
@@ -48,6 +54,19 @@ test('bridge refuses tampering, nonadmissible selection, and authority drift', a
   assert.throws(() => buildEvaluateRequest(handoff, options), InputError);
 });
 
+test('bridge reconciles the full Evaluate HTTP body and the inner result identically', async () => {
+  const { handoff, response } = await fixture();
+  const request = buildEvaluateRequest(handoff, options);
+  const body = httpBody(response);
+  assert.deepEqual(reconcileEvaluateResponse(handoff, request, body),
+    reconcileEvaluateResponse(handoff, request, response));
+  body.result.selected_candidate_id = 'publish_report';
+  assert.throws(() => reconcileEvaluateResponse(handoff, request, body), InputError);
+  body.result.selected_candidate_id = 'summarize_evidence';
+  delete body.counted;
+  assert.throws(() => reconcileEvaluateResponse(handoff, request, body), InputError);
+});
+
 test('bridge records a governed refusal without selecting an action', async () => {
   const { handoff, response } = await fixture();
   const request = buildEvaluateRequest(handoff, options);
@@ -57,6 +76,7 @@ test('bridge records a governed refusal without selecting an action', async () =
   const record = reconcileEvaluateResponse(handoff, request, response);
   assert.equal(record.evaluate_outcome, 'governed_noop_refusal');
   assert.equal(record.selected_candidate_id, null);
+  assert.deepEqual(reconcileEvaluateResponse(handoff, request, httpBody(response)), record);
 });
 
 test('bridge stops on out-of-contract context or candidate count', async () => {
