@@ -102,6 +102,13 @@ function validateSuccess(response) {
     && receipt.committed_at === trace.committed_at, 'Evaluate receipt is invalid');
 }
 
+function selectionResult(response) {
+  if (!plainObject(response) || !Object.hasOwn(response, 'result')) return response;
+  requireCondition(exactKeys(response, ['receipt_id', 'evaluated_at', 'counted', 'result']),
+    'Evaluate HTTP response fields do not match the success envelope');
+  return response.result;
+}
+
 function verifiedHandoff(handoff) {
   requireCondition(plainObject(handoff) && handoff.schema_version === '2'
     && handoff.kind === 'deltax-preflight-evaluate-handoff', 'invalid Preflight handoff');
@@ -172,10 +179,11 @@ export function reconcileEvaluateResponse(handoff, request, response) {
     objective: request.objective, context: request.context
   })), 'Evaluate request differs from the admissible projection');
   const ids = derived.result.admissible_candidate_ids;
-  validateSuccess(response);
-  if (response.outcome === 'selected')
-    requireCondition(ids.includes(response.selected_candidate_id), 'Evaluate selected a nonadmissible candidate');
-  else requireCondition(response.selected_candidate_id === null, 'refusal must not select a candidate');
+  const selection = selectionResult(response);
+  validateSuccess(selection);
+  if (selection.outcome === 'selected')
+    requireCondition(ids.includes(selection.selected_candidate_id), 'Evaluate selected a nonadmissible candidate');
+  else requireCondition(selection.selected_candidate_id === null, 'refusal must not select a candidate');
   const requestHash = createHash('sha256').update(JSON.stringify(request)).digest('hex');
   return {
     schema_version: '1',
@@ -185,10 +193,10 @@ export function reconcileEvaluateResponse(handoff, request, response) {
     admissible_candidate_ids: ids,
     preflight_receipt: derived.result.receipt,
     evaluate_request_sha256: requestHash,
-    evaluate_outcome: response.outcome,
-    selected_candidate_id: response.selected_candidate_id,
-    evaluate_trace_id: response.trace.trace_id,
-    evaluate_receipt_sha256: response.commercial_receipt.receipt_sha256,
+    evaluate_outcome: selection.outcome,
+    selected_candidate_id: selection.selected_candidate_id,
+    evaluate_trace_id: selection.trace.trace_id,
+    evaluate_receipt_sha256: selection.commercial_receipt.receipt_sha256,
     selection_is_execution: false
   };
 }
